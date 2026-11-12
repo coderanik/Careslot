@@ -119,9 +119,28 @@ const searchDoctors = defineTool({
 const getAvailableSlots = defineTool({
   name: "getAvailableSlots",
   description:
-    "Use this when the patient wants free appointment times for a doctor on a date or date range. Returns only slots where is_booked is false. Morning means before 12:00.",
+    "Use this once to list free slots. Pass one doctor_id, or doctor_ids from searchDoctors, or language + date to check several doctors together. Never call this repeatedly per doctor. Morning means before 12:00.",
   schema: z.object({
-    doctor_id: z.string().trim().min(2).max(10).describe("Doctor id, for example DR03"),
+    doctor_id: z
+      .string()
+      .trim()
+      .min(2)
+      .max(10)
+      .optional()
+      .describe("Single doctor id, for example DR03"),
+    doctor_ids: z
+      .array(z.string().trim().min(2).max(10))
+      .min(1)
+      .max(12)
+      .optional()
+      .describe("Several doctor ids from searchDoctors — preferred when comparing availability"),
+    language: z
+      .string()
+      .trim()
+      .min(2)
+      .max(30)
+      .optional()
+      .describe("If set without doctor ids, only include doctors who speak this language"),
     date: isoDate.optional().describe("Exact day YYYY-MM-DD. Prefer this when the patient named one day."),
     from_date: isoDate.optional().describe("Start of range YYYY-MM-DD when searching a window"),
     to_date: isoDate.optional().describe("End of range YYYY-MM-DD when searching a window"),
@@ -130,26 +149,49 @@ const getAvailableSlots = defineTool({
       .optional()
       .describe("If true, only return slots with start_time before 12:00"),
   }),
-  run: async ({ doctor_id, date, from_date, to_date, morning_only }) => {
+  run: async ({ doctor_id, doctor_ids, language, date, from_date, to_date, morning_only }) => {
     await requireSession("patient");
     const db = getSupabase();
 
-    const { data: doctor, error: doctorError } = await db
+    let ids = doctor_ids?.length ? [...doctor_ids] : doctor_id ? [doctor_id] : [];
+
+    if (ids.length === 0 || language) {
+      const { data: doctors, error: doctorsError } = await db
+        .from("doctors")
+        .select("id, name, department_id, languages");
+      if (doctorsError) throw new Error(doctorsError.message);
+
+      let pool = doctors ?? [];
+      if (language) {
+        const lang = language.toLowerCase();
+        pool = pool.filter((d) =>
+          (d.languages as string[] | null)?.some((l) => l.toLowerCase().includes(lang))
+        );
+      }
+      if (ids.length > 0) {
+        const wanted = new Set(ids);
+        pool = pool.filter((d) => wanted.has(d.id));
+      }
+      ids = pool.map((d) => d.id);
+    }
+
+    if (ids.length === 0) throw new Error("No matching doctors found for free-slot search");
+
+    const { data: doctorRows, error: doctorError } = await db
       .from("doctors")
-      .select("id, name, department_id")
-      .eq("id", doctor_id)
-      .maybeSingle();
+      .select("id, name, department_id, languages")
+      .in("id", ids);
     if (doctorError) throw new Error(doctorError.message);
-    if (!doctor) throw new Error(`No doctor found with id ${doctor_id}`);
+    if (!doctorRows?.length) throw new Error("No doctor found for the given ids");
 
     let query = db
       .from("slots")
       .select("id, doctor_id, slot_date, start_time, is_booked")
-      .eq("doctor_id", doctor_id)
+      .in("doctor_id", ids)
       .eq("is_booked", false)
       .order("slot_date", { ascending: true })
       .order("start_time", { ascending: true })
-      .limit(40);
+      .limit(80);
 
     if (date) {
       query = query.eq("slot_date", date);
@@ -166,14 +208,31 @@ const getAvailableSlots = defineTool({
       slots = slots.filter((s) => String(s.start_time).slice(0, 5) < "12:00");
     }
 
+    const byDoctor = doctorRows.map((doctor) => {
+      const doctorSlots = slots
+        .filter((s) => s.doctor_id === doctor.id)
+        .slice(0, 6)
+        .map((s) => ({
+          id: s.id,
+          date: s.slot_date,
+          start_time: String(s.start_time).slice(0, 5),
+        }));
+      return {
+        doctor: {
+          id: doctor.id,
+          name: doctor.name,
+          department_id: doctor.department_id,
+          languages: doctor.languages,
+        },
+        free_count: doctorSlots.length,
+        slots: doctorSlots,
+      };
+    });
+
     return {
-      doctor,
       count: slots.length,
-      slots: slots.map((s) => ({
-        id: s.id,
-        date: s.slot_date,
-        start_time: String(s.start_time).slice(0, 5),
-      })),
+      doctors_with_slots: byDoctor.filter((d) => d.free_count > 0),
+      doctors_without_slots: byDoctor.filter((d) => d.free_count === 0).map((d) => d.doctor),
     };
   },
 });
