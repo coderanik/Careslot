@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabase } from "@/lib/supabase";
 import { getSessionUser } from "@/lib/session";
+import { MOCK_DEPARTMENTS, MOCK_DOCTORS } from "@/lib/mockData";
 
 export const runtime = "nodejs";
 
@@ -13,28 +14,50 @@ export async function GET(request: Request) {
   const language = searchParams.get("language");
   const q = searchParams.get("q");
 
-  let query = getSupabase()
-    .from("doctors")
-    .select(
-      "id, name, department_id, qualification, experience_years, consultation_fee, languages, room, departments(id, name)"
-    )
-    .order("name", { ascending: true });
+  let doctors = MOCK_DOCTORS;
+  let departments = MOCK_DEPARTMENTS;
 
-  if (departmentId) query = query.eq("department_id", departmentId);
+  if (process.env.SUPABASE_URL && process.env.SUPABASE_SECRET_KEY) {
+    try {
+      let query = getSupabase()
+        .from("doctors")
+        .select(
+          "id, name, department_id, qualification, experience_years, consultation_fee, languages, room, departments(id, name)"
+        )
+        .order("name", { ascending: true });
 
-  const { data, error } = await query;
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+      if (departmentId) query = query.eq("department_id", departmentId);
 
-  let doctors = data ?? [];
+      const { data, error } = await query;
+      if (!error && data) {
+        doctors = data as unknown as typeof MOCK_DOCTORS;
+      }
+
+      const { data: deptData, error: deptError } = await getSupabase()
+        .from("departments")
+        .select("id, name, common_issues")
+        .order("name");
+      if (!deptError && deptData) {
+        departments = deptData;
+      }
+    } catch {
+      // fallback to mock data
+    }
+  }
+
+  let filtered = doctors;
+  if (departmentId) {
+    filtered = filtered.filter((d) => d.department_id === departmentId);
+  }
   if (language) {
     const lang = language.toLowerCase();
-    doctors = doctors.filter((d) =>
+    filtered = filtered.filter((d) =>
       (d.languages as string[] | null)?.some((l) => l.toLowerCase().includes(lang))
     );
   }
   if (q) {
     const needle = q.toLowerCase();
-    doctors = doctors.filter(
+    filtered = filtered.filter(
       (d) =>
         d.name.toLowerCase().includes(needle) ||
         d.qualification.toLowerCase().includes(needle) ||
@@ -44,10 +67,5 @@ export async function GET(request: Request) {
     );
   }
 
-  const { data: departments } = await getSupabase()
-    .from("departments")
-    .select("id, name, common_issues")
-    .order("name");
-
-  return NextResponse.json({ doctors, departments: departments ?? [] });
+  return NextResponse.json({ doctors: filtered, departments });
 }

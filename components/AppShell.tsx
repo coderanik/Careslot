@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useChat } from "@/components/ChatContext";
 
 type Me = { role: "patient" | "doctor"; userId: string; name: string };
 
@@ -17,6 +18,7 @@ const doctorNav = [{ href: "/doctor", label: "Today’s schedule" }];
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [user, setUser] = useState<Me | null>(null);
+  const { messages } = useChat();
 
   useEffect(() => {
     fetch("/api/me")
@@ -56,17 +58,27 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <nav className="glass panel flex flex-wrap gap-1 p-1.5">
             {nav.map((item) => {
               const active = pathname === item.href;
+              const isBooking = item.href === "/";
+              const showBadge = isBooking && !active && messages.length > 0;
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`rounded-[16px] px-3.5 py-2 text-sm font-medium transition ${
+                  className={`relative flex items-center gap-1.5 rounded-[16px] px-3.5 py-2 text-sm font-medium transition ${
                     active
                       ? "bg-[var(--ink)] text-[#ffffff] shadow-sm"
                       : "text-[var(--muted)] hover:bg-white/70 hover:text-[var(--ink)]"
                   }`}
                 >
-                  {item.label}
+                  <span>{item.label}</span>
+                  {showBadge && (
+                    <span
+                      title={`${messages.length} saved message${messages.length > 1 ? "s" : ""}`}
+                      className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--accent)] px-1 text-[10px] font-bold text-white shadow-sm"
+                    >
+                      {messages.length}
+                    </span>
+                  )}
                 </Link>
               );
             })}

@@ -18,17 +18,44 @@ export default function UpcomingPanel({ refreshKey }: { refreshKey: number }) {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/appointments?status=booked")
-      .then(async (r) => {
-        const data = await r.json();
-        if (!r.ok) throw new Error(data.error ?? "Failed to load");
-        if (!cancelled) setItems(data.appointments ?? []);
-      })
-      .catch((err) => {
-        if (!cancelled) setError(err instanceof Error ? err.message : "Failed to load");
-      });
+
+    function loadAppointments() {
+      fetch("/api/appointments?status=booked")
+        .then(async (r) => {
+          const data = await r.json();
+          if (!r.ok) throw new Error(data.error ?? "Failed to load");
+          if (!cancelled) setItems(data.appointments ?? []);
+        })
+        .catch((err) => {
+          if (!cancelled) setError(err instanceof Error ? err.message : "Failed to load");
+        });
+    }
+
+    loadAppointments();
+
+    function onVisibilityOrFocus() {
+      if (typeof document !== "undefined" && document.visibilityState === "visible") {
+        loadAppointments();
+      }
+    }
+
+    function onStorage(e: StorageEvent) {
+      if (e.key === "careslot_appointments_updated") {
+        loadAppointments();
+      }
+    }
+
+    window.addEventListener("appointments-changed", loadAppointments);
+    window.addEventListener("visibilitychange", onVisibilityOrFocus);
+    window.addEventListener("focus", onVisibilityOrFocus);
+    window.addEventListener("storage", onStorage);
+
     return () => {
       cancelled = true;
+      window.removeEventListener("appointments-changed", loadAppointments);
+      window.removeEventListener("visibilitychange", onVisibilityOrFocus);
+      window.removeEventListener("focus", onVisibilityOrFocus);
+      window.removeEventListener("storage", onStorage);
     };
   }, [refreshKey]);
 

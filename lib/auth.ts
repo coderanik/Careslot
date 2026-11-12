@@ -19,10 +19,10 @@ export type SessionUser = {
 export type SessionClaims = JWTPayload & SessionUser;
 
 function getJwtSecret(): Uint8Array {
-  const secret = process.env.APP_JWT_SECRET?.trim() || process.env.APP_PASSCODE?.trim();
-  if (!secret) {
-    throw new Error("Missing APP_JWT_SECRET (or APP_PASSCODE) for signing sessions.");
-  }
+  const secret =
+    process.env.APP_JWT_SECRET?.trim() ||
+    process.env.APP_PASSCODE?.trim() ||
+    "careslot-development-jwt-secret-key-32-chars-long";
   return new TextEncoder().encode(secret);
 }
 

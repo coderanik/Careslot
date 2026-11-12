@@ -5,7 +5,7 @@ import { useState } from "react";
 type Role = "patient" | "doctor";
 
 export default function LoginPage() {
-  const [passcode, setPasscode] = useState("");
+  const [passcode, setPasscode] = useState("123456");
   const [role, setRole] = useState<Role>("patient");
   const [doctorId, setDoctorId] = useState("DR01");
   const [error, setError] = useState("");
@@ -93,13 +93,16 @@ export default function LoginPage() {
         )}
 
         <label className="mt-4 block text-sm">
-          <span className="text-[var(--muted)]">Team passcode</span>
+          <div className="flex items-center justify-between">
+            <span className="text-[var(--muted)]">Team passcode</span>
+            <span className="text-xs text-[var(--muted)]">Demo: <code>123456</code></span>
+          </div>
           <input
             type="password"
             value={passcode}
             onChange={(e) => setPasscode(e.target.value)}
             className="mt-1.5 w-full rounded-2xl border border-[var(--line)] bg-white/80 px-4 py-3 outline-none focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-soft)]"
-            placeholder="Passcode"
+            placeholder="123456"
             autoFocus
           />
         </label>

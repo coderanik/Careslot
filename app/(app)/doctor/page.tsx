@@ -23,15 +23,50 @@ export default function DoctorSchedulePage() {
   const [role, setRole] = useState<string>("");
 
   useEffect(() => {
-    fetch(`/api/appointments?date=${date}`)
-      .then(async (r) => {
-        const data = await r.json();
-        if (!r.ok) throw new Error(data.error ?? "Failed");
-        setRole(data.role ?? "");
-        setRows(data.appointments ?? []);
-        setError("");
-      })
-      .catch((err) => setError(err instanceof Error ? err.message : "Failed"));
+    let cancelled = false;
+
+    function loadSchedule() {
+      fetch(`/api/appointments?date=${date}`)
+        .then(async (r) => {
+          const data = await r.json();
+          if (!r.ok) throw new Error(data.error ?? "Failed");
+          if (!cancelled) {
+            setRole(data.role ?? "");
+            setRows(data.appointments ?? []);
+            setError("");
+          }
+        })
+        .catch((err) => {
+          if (!cancelled) setError(err instanceof Error ? err.message : "Failed");
+        });
+    }
+
+    loadSchedule();
+
+    function onVisibilityOrFocus() {
+      if (typeof document !== "undefined" && document.visibilityState === "visible") {
+        loadSchedule();
+      }
+    }
+
+    function onStorage(e: StorageEvent) {
+      if (e.key === "careslot_appointments_updated") {
+        loadSchedule();
+      }
+    }
+
+    window.addEventListener("appointments-changed", loadSchedule);
+    window.addEventListener("visibilitychange", onVisibilityOrFocus);
+    window.addEventListener("focus", onVisibilityOrFocus);
+    window.addEventListener("storage", onStorage);
+
+    return () => {
+      cancelled = true;
+      window.removeEventListener("appointments-changed", loadSchedule);
+      window.removeEventListener("visibilitychange", onVisibilityOrFocus);
+      window.removeEventListener("focus", onVisibilityOrFocus);
+      window.removeEventListener("storage", onStorage);
+    };
   }, [date]);
 
   const title = useMemo(() => {
