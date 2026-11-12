@@ -54,11 +54,11 @@ Next.js · React · TypeScript · Tailwind CSS · Supabase · Gemini API (functi
 
 | Role | Name |
 | --- | --- |
-| Team Lead | |
-| Frontend | |
-| Backend / API | |
-| Database | |
-| AI / Agent | |
+| Team Lead | Rishi Krishna Sahoo |
+| Frontend | Anik Das |
+| Backend / API | Anik Das |
+| Database | Panthadeep Majumder |
+| AI / Agent | Jay Mukati |
 
 ## Run it locally
 
