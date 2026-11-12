@@ -6,6 +6,8 @@ import type { ChatMessage } from "../schemas";
 import { tools } from "./tools";
 import { toFunctionDeclarations } from "./defineTool";
 import { buildSystemPrompt } from "./systemPrompt";
+import { checkUserRequest } from "./policy";
+import { getSessionUser } from "../session";
 import type { AgentResult, AgentStep } from "./types";
 
 /** Stops the agent from looping forever and using up your Gemini quota. */
@@ -13,12 +15,36 @@ const MAX_ROUNDS = 5;
 
 /**
  * THE AGENT LOOP
- * 1. Send the chat + the tool list to Gemini.
- * 2. If Gemini asks for tools, check the arguments with Zod and run them.
- * 3. Send the results back to Gemini.
- * 4. Repeat until Gemini gives a final text answer (or MAX_ROUNDS is reached).
+ * 1. Refuse rule-breaking requests with a clear reason (before Gemini).
+ * 2. Send the chat + the tool list to Gemini.
+ * 3. If Gemini asks for tools, check the arguments with Zod and run them.
+ * 4. Send the results back to Gemini.
+ * 5. Repeat until Gemini gives a final text answer (or MAX_ROUNDS is reached).
  */
 export async function runAgent(messages: ChatMessage[]): Promise<AgentResult> {
+  const lastUser = [...messages].reverse().find((m) => m.role === "user");
+  if (lastUser) {
+    const policy = checkUserRequest(lastUser.text);
+    if (!policy.ok) {
+      return {
+        reply: policy.reply,
+        steps: [
+          {
+            tool: "refuseRequest",
+            args: { reason: policy.reason },
+            ok: false,
+            writes: false,
+            error: policy.reason,
+          },
+        ],
+      };
+    }
+  }
+
+  const session = await getSessionUser();
+  const patient =
+    session?.role === "patient" ? { userId: session.userId, name: session.name } : undefined;
+
   const ai = getGemini();
   const steps: AgentStep[] = [];
   const functionDeclarations = toFunctionDeclarations(tools);
@@ -33,7 +59,7 @@ export async function runAgent(messages: ChatMessage[]): Promise<AgentResult> {
       model: GEMINI_MODEL,
       contents,
       config: {
-        systemInstruction: buildSystemPrompt(),
+        systemInstruction: buildSystemPrompt(patient),
         tools: [{ functionDeclarations }],
         temperature: 0.2,
       },

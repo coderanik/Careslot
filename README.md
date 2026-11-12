@@ -15,15 +15,20 @@ Patients of a multi-speciality clinic call the front desk just to book, move or 
 - Marks a slot booked exactly once; cancelling frees it again
 - Includes a stretch **doctor day view** for the signed-in doctor’s schedule
 - Protects the app with a team passcode, then issues a **JWT** with `role` + `userId`
+- Clinic console UI: **Dashboard**, **Knowledge Center**, and **Reports** alongside Booking
 
 ## Live demo
 
 - **Vercel link:** https://careslot-agent.vercel.app
+- **Landing:** `/` with Sign in / Sign up
+- **Register:** `/register` creates a new **patient** or **doctor** in Supabase (then signs you in)
+- **Login:** `/login` with patient/doctor id + team passcode (demo: `P001` / `DR01`)
 - **Passcode:** set in Vercel as `APP_PASSCODE` (same value as local `.env.local`)
 - **Demo prompts:**
   - `I have a skin rash, book me with a doctor on Friday morning.`
   - `Move my appointment to the next free slot.`
   - `Which Tamil-speaking doctors are free tomorrow?`
+  - `What medicine should I take for this rash?` ← agent must **refuse** with a clear reason (booking-only rule)
 
 > Add `GEMINI_API_KEY` in `.env.local` and Vercel project env, then redeploy / restart to enable the agent chat.
 

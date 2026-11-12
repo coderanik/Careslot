@@ -1,0 +1,219 @@
+/* CareSlot marketing landing — warm Apple-like surface, scoped under .landing */
+
+.landing {
+  --l-bg: #f6f4f1;
+  --l-bg-soft: #f1eeea;
+  --l-card: #ffffff;
+  --l-ink: #111111;
+  --l-muted: #6b6b6b;
+  --l-line: rgba(17, 17, 17, 0.08);
+  --l-accent: #ff5a1f;
+  --l-accent-soft: rgba(255, 90, 31, 0.12);
+  --l-pink: #ff4d6d;
+  --l-dark: #171513;
+  --l-shadow: 0 24px 60px rgba(17, 17, 17, 0.08);
+  --l-shadow-sm: 0 10px 30px rgba(17, 17, 17, 0.06);
+  color: var(--l-ink);
+  background:
+    radial-gradient(900px 500px at 50% -10%, rgba(255, 176, 140, 0.35), transparent 60%),
+    linear-gradient(180deg, #faf8f5 0%, var(--l-bg) 28%, #f3f1ed 100%);
+  overflow-x: hidden;
+}
+
+.landing a {
+  color: inherit;
+}
+
+.landing-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: saturate(160%) blur(16px);
+  -webkit-backdrop-filter: saturate(160%) blur(16px);
+  background: rgba(250, 248, 245, 0.78);
+  border-bottom: 1px solid transparent;
+  transition: border-color 240ms ease, background 240ms ease;
+}
+
+.landing-nav.scrolled {
+  border-bottom-color: var(--l-line);
+  background: rgba(250, 248, 245, 0.92);
+}
+
+.landing-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--l-line);
+  padding: 0.35rem 0.85rem 0.35rem 0.35rem;
+  font-size: 0.8125rem;
+  color: var(--l-muted);
+  box-shadow: var(--l-shadow-sm);
+}
+
+.landing-badge strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 999px;
+  background: var(--l-accent);
+  color: white;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.landing-card {
+  background: var(--l-card);
+  border: 1px solid var(--l-line);
+  border-radius: 28px;
+  box-shadow: var(--l-shadow-sm);
+}
+
+.landing-pill {
+  border-radius: 999px;
+}
+
+.landing-btn-dark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 999px;
+  background: var(--l-dark);
+  color: white;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  padding: 0.85rem 0.85rem 0.85rem 1.35rem;
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), background 180ms ease;
+}
+
+.landing-btn-dark:hover {
+  transform: translateY(-2px);
+  background: #000;
+}
+
+.landing-btn-dark .arrow {
+  display: inline-flex;
+  height: 1.85rem;
+  width: 1.85rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: white;
+  color: var(--l-dark);
+}
+
+.landing-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  border-radius: 999px;
+  border: 1px solid var(--l-line);
+  background: rgba(255, 255, 255, 0.65);
+  color: var(--l-ink);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  padding: 0.9rem 1.25rem;
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), background 180ms ease;
+}
+
+.landing-btn-ghost:hover {
+  transform: translateY(-2px);
+  background: white;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--delay, 0ms);
+}
+
+.reveal.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.float-y {
+  animation: float-y 6.5s ease-in-out infinite;
+}
+
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.progress-run {
+  animation: progress-run 8s ease-in-out infinite;
+  transform-origin: left center;
+}
+
+@keyframes progress-run {
+  0% {
+    width: 8%;
+  }
+  50% {
+    width: 72%;
+  }
+  100% {
+    width: 8%;
+  }
+}
+
+.pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.7;
+  }
+}
+
+.stagger > .reveal:nth-child(1) {
+  --delay: 40ms;
+}
+.stagger > .reveal:nth-child(2) {
+  --delay: 120ms;
+}
+.stagger > .reveal:nth-child(3) {
+  --delay: 200ms;
+}
+.stagger > .reveal:nth-child(4) {
+  --delay: 280ms;
+}
+.stagger > .reveal:nth-child(5) {
+  --delay: 360ms;
+}
+.stagger > .reveal:nth-child(6) {
+  --delay: 440ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .float-y,
+  .progress-run,
+  .pulse-dot,
+  .landing-btn-dark,
+  .landing-btn-ghost {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

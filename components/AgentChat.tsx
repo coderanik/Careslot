@@ -8,6 +8,7 @@ const SAMPLE_PROMPTS = [
   "I have a skin rash, book me with a doctor on Friday morning.",
   "Move my appointment to the next free slot.",
   "Which Tamil-speaking doctors are free tomorrow?",
+  "What medicine should I take for this rash?",
 ];
 
 export default function AgentChat({ onDataChanged }: { onDataChanged?: () => void }) {
@@ -29,10 +30,11 @@ export default function AgentChat({ onDataChanged }: { onDataChanged?: () => voi
   }
 
   return (
-    <div className="glass panel flex h-[min(74vh,720px)] flex-col overflow-hidden">
+    <div className="surface flex h-[min(74vh,720px)] flex-col overflow-hidden">
       <div className="border-b border-[var(--line)] px-5 py-4">
         <div className="flex items-center justify-between gap-3">
           <div>
+<<<<<<< HEAD
             <div className="flex items-center gap-2">
               <h2 className="text-base font-semibold tracking-tight">Booking chat</h2>
               {messages.length > 0 && (
@@ -42,10 +44,14 @@ export default function AgentChat({ onDataChanged }: { onDataChanged?: () => voi
                 </span>
               )}
             </div>
+=======
+            <h2 className="text-base font-bold tracking-tight">Booking chat</h2>
+>>>>>>> 1c981e47484ad694291124653d6ef526d7475e3c
             <p className="mt-0.5 text-xs text-[var(--muted)]">
               Plain English in. Gemini chooses the tools. History is automatically saved.
             </p>
           </div>
+<<<<<<< HEAD
           <div className="flex items-center gap-2">
             {messages.length > 0 && (
               <button
@@ -68,13 +74,28 @@ export default function AgentChat({ onDataChanged }: { onDataChanged?: () => voi
         {!ready && <p className="text-sm text-[var(--muted)]">Restoring your conversation…</p>}
 
         {ready && messages.length === 0 && (
+=======
+          <span className="hidden rounded-full bg-[var(--accent-soft)] px-2.5 py-1 text-[11px] font-semibold text-[var(--accent)] sm:inline">
+            Signed-in patient
+          </span>
+        </div>
+      </div>
+
+      <div className="flex-1 space-y-4 overflow-y-auto bg-[var(--bg)]/50 px-4 py-5 md:px-5">
+        {messages.length === 0 && (
+>>>>>>> 1c981e47484ad694291124653d6ef526d7475e3c
           <div className="space-y-3">
-            <p className="text-sm text-[var(--muted)]">Try a demo prompt</p>
+            <p className="text-sm font-medium text-[var(--muted)]">Try a demo prompt</p>
             {SAMPLE_PROMPTS.map((p) => (
               <button
                 key={p}
+<<<<<<< HEAD
                 onClick={() => handleSend(p)}
                 className="block w-full rounded-2xl border border-[var(--line)] bg-white/55 px-4 py-3 text-left text-sm leading-relaxed text-[var(--ink)] transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md"
+=======
+                onClick={() => send(p)}
+                className="block w-full rounded-xl border border-[var(--line)] bg-white px-4 py-3 text-left text-sm leading-relaxed text-[var(--ink)] shadow-[var(--shadow-sm)] transition hover:-translate-y-0.5 hover:border-[var(--accent)] hover:shadow-[var(--shadow)]"
+>>>>>>> 1c981e47484ad694291124653d6ef526d7475e3c
               >
                 {p}
               </button>
@@ -89,8 +110,8 @@ export default function AgentChat({ onDataChanged }: { onDataChanged?: () => voi
               <div
                 className={
                   m.role === "user"
-                    ? "rounded-[22px] rounded-br-md bg-[var(--ink)] px-4 py-2.5 text-sm leading-relaxed text-white"
-                    : "whitespace-pre-wrap rounded-[22px] rounded-bl-md border border-[var(--line)] bg-white/70 px-4 py-2.5 text-sm leading-relaxed"
+                    ? "rounded-2xl rounded-br-md bg-[var(--accent)] px-4 py-2.5 text-sm leading-relaxed text-white shadow-[0_8px_18px_rgba(99,102,241,0.25)]"
+                    : "whitespace-pre-wrap rounded-2xl rounded-bl-md border border-[var(--line)] bg-white px-4 py-2.5 text-sm leading-relaxed shadow-[var(--shadow-sm)]"
                 }
               >
                 {m.text}
@@ -125,11 +146,12 @@ export default function AgentChat({ onDataChanged }: { onDataChanged?: () => voi
           e.preventDefault();
           handleSend(input);
         }}
-        className="flex gap-2 border-t border-[var(--line)] bg-white/40 p-3"
+        className="flex gap-2 border-t border-[var(--line)] bg-white p-3"
       >
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
+<<<<<<< HEAD
           placeholder={ready ? "Describe what you need…" : "Restoring your conversation…"}
           disabled={!ready || loading}
           className="flex-1 rounded-2xl border border-[var(--line)] bg-white/80 px-4 py-3 text-sm outline-none transition focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-soft)] disabled:opacity-60"
@@ -138,6 +160,15 @@ export default function AgentChat({ onDataChanged }: { onDataChanged?: () => voi
           type="submit"
           disabled={!ready || loading || !input.trim()}
           className="rounded-2xl bg-[var(--accent)] px-5 py-3 text-sm font-medium text-white transition hover:brightness-110 disabled:opacity-40"
+=======
+          placeholder="Describe what you need…"
+          className="flex-1 rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 text-sm outline-none transition focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-soft)]"
+        />
+        <button
+          type="submit"
+          disabled={loading || !input.trim()}
+          className="rounded-xl bg-[var(--accent)] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[var(--accent-strong)] disabled:opacity-40"
+>>>>>>> 1c981e47484ad694291124653d6ef526d7475e3c
         >
           Send
         </button>
@@ -152,16 +183,16 @@ function ToolSteps({ steps }: { steps: AgentStep[] }) {
       {steps.map((s, i) => (
         <details
           key={i}
-          className="rounded-2xl border border-[var(--line)] bg-white/55 px-3 py-2 text-xs"
+          className="rounded-xl border border-[var(--line)] bg-white px-3 py-2 text-xs shadow-[var(--shadow-sm)]"
         >
           <summary className="cursor-pointer select-none">
             <span className={s.ok ? "text-[var(--success)]" : "text-[var(--danger)]"}>
               {s.ok ? "Done" : "Failed"}
             </span>
             {" · "}
-            <span className="font-mono font-medium">{s.tool}</span>
+            <span className="font-mono font-semibold">{s.tool}</span>
             {s.writes && (
-              <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-amber-800">
+              <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 font-semibold text-amber-800">
                 writes
               </span>
             )}
