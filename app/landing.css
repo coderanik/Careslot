@@ -20,10 +20,6 @@
   overflow-x: hidden;
 }
 
-.landing a {
-  color: inherit;
-}
-
 .landing-nav {
   position: sticky;
   top: 0;

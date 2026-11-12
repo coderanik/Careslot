@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import SiteFooter from "@/components/SiteFooter";
+import ThemeToggle from "@/components/ThemeToggle";
 
 type Role = "patient" | "doctor";
 
@@ -48,6 +49,7 @@ export default function LoginPage() {
             CARESLOT<span className="text-[#ff5a1f]">.</span>
           </Link>
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <Link
               href="/register"
               className="rounded-full bg-[#171513] px-4 py-2 text-sm font-semibold text-white hover:bg-black"

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import SiteFooter from "@/components/SiteFooter";
+import ThemeToggle from "@/components/ThemeToggle";
 
 function useReveal() {
   const ref = useRef<HTMLDivElement>(null);
@@ -126,6 +127,7 @@ export default function Landing() {
             </a>
           </nav>
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <Link
               href="/login"
               className="rounded-full px-3.5 py-2 text-sm font-semibold text-[#111] hover:bg-black/5"

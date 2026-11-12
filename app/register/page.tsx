@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import SiteFooter from "@/components/SiteFooter";
+import ThemeToggle from "@/components/ThemeToggle";
 
 type Role = "patient" | "doctor";
 type Department = { id: string; name: string };
@@ -88,6 +89,7 @@ export default function RegisterPage() {
             CARESLOT<span className="text-[#ff5a1f]">.</span>
           </Link>
           <div className="flex items-center gap-2 text-sm">
+            <ThemeToggle />
             <span className="hidden text-[#6b6b6b] sm:inline">Already have an id?</span>
             <Link
               href="/login"

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 type Me = { role: "patient" | "doctor"; userId: string; name: string };
 
@@ -206,6 +207,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               <BellIcon />
               <span className="absolute right-2.5 top-2.5 h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
             </button>
+
+            <ThemeToggle />
 
             <div className="flex items-center gap-2.5 rounded-full border border-[var(--line)] bg-white py-1.5 pl-1.5 pr-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--dark)] text-xs font-bold text-white">
