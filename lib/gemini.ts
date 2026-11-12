@@ -6,7 +6,11 @@ let client: GoogleGenAI | null = null;
 
 export function getGemini(): GoogleGenAI {
   if (!client) {
-    client = new GoogleGenAI({ apiKey: requireEnv("GEMINI_API_KEY") });
+    // Function calling needs the v1beta API surface for Gemini Developer API keys.
+    client = new GoogleGenAI({
+      apiKey: requireEnv("GEMINI_API_KEY"),
+      apiVersion: "v1beta",
+    });
   }
   return client;
 }
