@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import type { AgentStep } from "@/lib/agent/types";
-import { useChat } from "@/components/ChatContext";
+import { useEffect, useRef, useState } from "react";
+import type { AgentResult, AgentStep } from "@/lib/agent/types";
+
+type Message = { role: "user" | "model"; text: string; steps?: AgentStep[] };
 
 const SAMPLE_PROMPTS = [
   "I have a skin rash, book me with a doctor on Friday morning.",
@@ -12,21 +13,43 @@ const SAMPLE_PROMPTS = [
 ];
 
 export default function AgentChat({ onDataChanged }: { onDataChanged?: () => void }) {
-  const { messages, input, setInput, loading, error, ready, sendMessage, clearHistory, userId } =
-    useChat();
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  function handleSend(text: string) {
-    sendMessage(text, onDataChanged);
-  }
+  async function send(text: string) {
+    const trimmed = text.trim();
+    if (!trimmed || loading) return;
+    const next: Message[] = [...messages, { role: "user", text: trimmed }];
+    setMessages(next);
+    setInput("");
+    setLoading(true);
+    setError("");
 
-  function formatTime(timestamp?: number) {
-    if (!timestamp) return null;
-    return new Date(timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    try {
+      const res = await fetch("/api/agent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: next.slice(-20).map(({ role, text }) => ({ role, text })),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Request failed");
+      const result = data as AgentResult;
+      setMessages([...next, { role: "model", text: result.reply, steps: result.steps }]);
+      if (result.steps.some((s) => s.writes && s.ok)) onDataChanged?.();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -34,47 +57,11 @@ export default function AgentChat({ onDataChanged }: { onDataChanged?: () => voi
       <div className="border-b border-[var(--line)] px-5 py-4">
         <div className="flex items-center justify-between gap-3">
           <div>
-<<<<<<< HEAD
-            <div className="flex items-center gap-2">
-              <h2 className="text-base font-semibold tracking-tight">Booking chat</h2>
-              {messages.length > 0 && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-medium text-emerald-700">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  Saved
-                </span>
-              )}
-            </div>
-=======
             <h2 className="text-base font-bold tracking-tight">Booking chat</h2>
->>>>>>> 1c981e47484ad694291124653d6ef526d7475e3c
             <p className="mt-0.5 text-xs text-[var(--muted)]">
-              Plain English in. Gemini chooses the tools. History is automatically saved.
+              Plain English in. Gemini chooses the tools. You see every call.
             </p>
           </div>
-<<<<<<< HEAD
-          <div className="flex items-center gap-2">
-            {messages.length > 0 && (
-              <button
-                type="button"
-                onClick={clearHistory}
-                className="rounded-full border border-[var(--line)] bg-white/70 px-2.5 py-1 text-[11px] font-medium text-[var(--muted)] transition hover:bg-white hover:text-[var(--danger)]"
-                title="Clear conversation history and start fresh"
-              >
-                Clear chat
-              </button>
-            )}
-            <span className="hidden rounded-full bg-[var(--accent-soft)] px-2.5 py-1 text-[11px] font-medium text-[var(--accent)] sm:inline">
-              Patient {userId}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex-1 space-y-4 overflow-y-auto px-4 py-5 md:px-5">
-        {!ready && <p className="text-sm text-[var(--muted)]">Restoring your conversation…</p>}
-
-        {ready && messages.length === 0 && (
-=======
           <span className="hidden rounded-full bg-[var(--accent-soft)] px-2.5 py-1 text-[11px] font-semibold text-[var(--accent)] sm:inline">
             Signed-in patient
           </span>
@@ -83,19 +70,13 @@ export default function AgentChat({ onDataChanged }: { onDataChanged?: () => voi
 
       <div className="flex-1 space-y-4 overflow-y-auto bg-[var(--bg)]/50 px-4 py-5 md:px-5">
         {messages.length === 0 && (
->>>>>>> 1c981e47484ad694291124653d6ef526d7475e3c
           <div className="space-y-3">
             <p className="text-sm font-medium text-[var(--muted)]">Try a demo prompt</p>
             {SAMPLE_PROMPTS.map((p) => (
               <button
                 key={p}
-<<<<<<< HEAD
-                onClick={() => handleSend(p)}
-                className="block w-full rounded-2xl border border-[var(--line)] bg-white/55 px-4 py-3 text-left text-sm leading-relaxed text-[var(--ink)] transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md"
-=======
                 onClick={() => send(p)}
                 className="block w-full rounded-xl border border-[var(--line)] bg-white px-4 py-3 text-left text-sm leading-relaxed text-[var(--ink)] shadow-[var(--shadow-sm)] transition hover:-translate-y-0.5 hover:border-[var(--accent)] hover:shadow-[var(--shadow)]"
->>>>>>> 1c981e47484ad694291124653d6ef526d7475e3c
               >
                 {p}
               </button>
@@ -104,7 +85,7 @@ export default function AgentChat({ onDataChanged }: { onDataChanged?: () => voi
         )}
 
         {messages.map((m, i) => (
-          <div key={m.id || i} className={m.role === "user" ? "flex justify-end" : "flex justify-start"}>
+          <div key={i} className={m.role === "user" ? "flex justify-end" : "flex justify-start"}>
             <div className={m.role === "user" ? "max-w-[85%]" : "max-w-[92%] space-y-2"}>
               {m.steps && m.steps.length > 0 && <ToolSteps steps={m.steps} />}
               <div
@@ -116,15 +97,6 @@ export default function AgentChat({ onDataChanged }: { onDataChanged?: () => voi
               >
                 {m.text}
               </div>
-              {m.timestamp && (
-                <div
-                  className={`px-1 text-[10px] text-[var(--muted)] ${
-                    m.role === "user" ? "text-right" : "text-left"
-                  }`}
-                >
-                  {formatTime(m.timestamp)}
-                </div>
-              )}
             </div>
           </div>
         ))}
@@ -144,23 +116,13 @@ export default function AgentChat({ onDataChanged }: { onDataChanged?: () => voi
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          handleSend(input);
+          send(input);
         }}
         className="flex gap-2 border-t border-[var(--line)] bg-white p-3"
       >
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-<<<<<<< HEAD
-          placeholder={ready ? "Describe what you need…" : "Restoring your conversation…"}
-          disabled={!ready || loading}
-          className="flex-1 rounded-2xl border border-[var(--line)] bg-white/80 px-4 py-3 text-sm outline-none transition focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-soft)] disabled:opacity-60"
-        />
-        <button
-          type="submit"
-          disabled={!ready || loading || !input.trim()}
-          className="rounded-2xl bg-[var(--accent)] px-5 py-3 text-sm font-medium text-white transition hover:brightness-110 disabled:opacity-40"
-=======
           placeholder="Describe what you need…"
           className="flex-1 rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 text-sm outline-none transition focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-soft)]"
         />
@@ -168,7 +130,6 @@ export default function AgentChat({ onDataChanged }: { onDataChanged?: () => voi
           type="submit"
           disabled={loading || !input.trim()}
           className="rounded-xl bg-[var(--accent)] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[var(--accent-strong)] disabled:opacity-40"
->>>>>>> 1c981e47484ad694291124653d6ef526d7475e3c
         >
           Send
         </button>

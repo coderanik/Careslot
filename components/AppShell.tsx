@@ -1,14 +1,8 @@
 "use client";
 
 import Link from "next/link";
-<<<<<<< HEAD
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useChat } from "@/components/ChatContext";
-=======
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
->>>>>>> 1c981e47484ad694291124653d6ef526d7475e3c
 
 type Me = { role: "patient" | "doctor"; userId: string; name: string };
 
@@ -64,12 +58,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [user, setUser] = useState<Me | null>(null);
-<<<<<<< HEAD
-  const { messages } = useChat();
-=======
   const [mobileOpen, setMobileOpen] = useState(false);
   const [query, setQuery] = useState("");
->>>>>>> 1c981e47484ad694291124653d6ef526d7475e3c
 
   useEffect(() => {
     fetch("/api/me")
@@ -127,52 +117,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         />
       )}
 
-<<<<<<< HEAD
-        <div className="flex flex-col items-start gap-3 md:items-end">
-          <nav className="glass panel flex flex-wrap gap-1 p-1.5">
-            {nav.map((item) => {
-              const active = pathname === item.href;
-              const isBooking = item.href === "/";
-              const showBadge = isBooking && !active && messages.length > 0;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`relative flex items-center gap-1.5 rounded-[16px] px-3.5 py-2 text-sm font-medium transition ${
-                    active
-                      ? "bg-[var(--ink)] text-[#ffffff] shadow-sm"
-                      : "text-[var(--muted)] hover:bg-white/70 hover:text-[var(--ink)]"
-                  }`}
-                >
-                  <span>{item.label}</span>
-                  {showBadge && (
-                    <span
-                      title={`${messages.length} saved message${messages.length > 1 ? "s" : ""}`}
-                      className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--accent)] px-1 text-[10px] font-bold text-white shadow-sm"
-                    >
-                      {messages.length}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
-
-          <div className="flex items-center gap-3 text-sm">
-            {user && (
-              <div className="rounded-full bg-[var(--accent-soft)] px-3 py-1.5 text-[var(--accent)]">
-                <span className="font-medium">{user.name}</span>
-                <span className="mx-1.5 opacity-40">·</span>
-                <span className="uppercase tracking-wide opacity-80">{user.role}</span>
-              </div>
-            )}
-            <button
-              onClick={logout}
-              className="text-[var(--muted)] transition hover:text-[var(--ink)]"
-            >
-              Sign out
-            </button>
-=======
       <aside
         className={`fixed inset-y-0 left-0 z-50 flex w-[260px] flex-col border-r border-[var(--line)] bg-[var(--bg-sidebar)] transition-transform duration-200 lg:static lg:translate-x-0 ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
@@ -185,7 +129,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <div>
             <p className="text-base font-bold tracking-tight text-[var(--ink)]">CareSlot</p>
             <p className="text-[11px] font-medium text-[var(--muted)]">Clinical booking</p>
->>>>>>> 1c981e47484ad694291124653d6ef526d7475e3c
           </div>
         </div>
 

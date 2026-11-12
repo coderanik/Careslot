@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
@@ -21,49 +20,14 @@ export default function AppointmentsPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    let cancelled = false;
-
-    function loadAppointments() {
-      fetch(`/api/appointments?status=${status}`)
-        .then(async (r) => {
-          const data = await r.json();
-          if (!r.ok) throw new Error(data.error ?? "Failed");
-          if (!cancelled) {
-            setItems(data.appointments ?? []);
-            setError("");
-          }
-        })
-        .catch((err) => {
-          if (!cancelled) setError(err instanceof Error ? err.message : "Failed");
-        });
-    }
-
-    loadAppointments();
-
-    function onVisibilityOrFocus() {
-      if (typeof document !== "undefined" && document.visibilityState === "visible") {
-        loadAppointments();
-      }
-    }
-
-    function onStorage(e: StorageEvent) {
-      if (e.key === "careslot_appointments_updated") {
-        loadAppointments();
-      }
-    }
-
-    window.addEventListener("appointments-changed", loadAppointments);
-    window.addEventListener("visibilitychange", onVisibilityOrFocus);
-    window.addEventListener("focus", onVisibilityOrFocus);
-    window.addEventListener("storage", onStorage);
-
-    return () => {
-      cancelled = true;
-      window.removeEventListener("appointments-changed", loadAppointments);
-      window.removeEventListener("visibilitychange", onVisibilityOrFocus);
-      window.removeEventListener("focus", onVisibilityOrFocus);
-      window.removeEventListener("storage", onStorage);
-    };
+    fetch(`/api/appointments?status=${status}`)
+      .then(async (r) => {
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.error ?? "Failed");
+        setItems(data.appointments ?? []);
+        setError("");
+      })
+      .catch((err) => setError(err instanceof Error ? err.message : "Failed"));
   }, [status]);
 
   return (
@@ -92,35 +56,8 @@ export default function AppointmentsPage() {
             href="/booking"
             className="rounded-xl bg-[var(--accent)] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[var(--accent-strong)]"
           >
-<<<<<<< HEAD
-            My Appointments
-          </h2>
-          <p className="mt-1 text-sm text-[var(--muted)]">
-            Everything booked for Arjun Mehta. Reschedule or cancel from the{" "}
-            <Link href="/" className="font-medium text-[var(--accent)] underline hover:opacity-80">
-              booking chat
-            </Link>
-            .
-          </p>
-        </div>
-        <div className="flex gap-1 rounded-2xl border border-[var(--line)] bg-white/60 p-1">
-          {["booked", "cancelled", "all"].map((s) => (
-            <button
-              key={s}
-              onClick={() => setStatus(s)}
-              className={`rounded-xl px-3 py-2 text-sm capitalize transition ${
-                status === s
-                  ? "bg-[var(--ink)] text-white"
-                  : "text-[var(--muted)] hover:text-[var(--ink)]"
-              }`}
-            >
-              {s}
-            </button>
-          ))}
-=======
             Change via AI
           </Link>
->>>>>>> 1c981e47484ad694291124653d6ef526d7475e3c
         </div>
       </div>
 
