@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 
 type Doctor = {
   id: string;
@@ -52,27 +53,31 @@ export default function DoctorsPage() {
 
   return (
     <div className="space-y-5">
-      <div className="glass panel p-5">
-        <h2
-          className="text-2xl font-semibold tracking-tight"
-          style={{ fontFamily: "var(--font-display)" }}
-        >
-          Doctors
-        </h2>
-        <p className="mt-1 text-sm text-[var(--muted)]">
-          Browse specialties, languages and fees before you ask the agent to book.
-        </p>
+      <div className="surface p-5">
+        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-sm text-[var(--muted)]">
+              Browse specialties, languages and fees before you ask the agent to book.
+            </p>
+          </div>
+          <Link
+            href="/booking"
+            className="inline-flex rounded-xl bg-[var(--accent)] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[var(--accent-strong)]"
+          >
+            Book with AI
+          </Link>
+        </div>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search name or qualification"
-            className="rounded-2xl border border-[var(--line)] bg-white/80 px-4 py-3 text-sm outline-none focus:border-[var(--accent)]"
+            className="rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 text-sm outline-none focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-soft)]"
           />
           <select
             value={departmentId}
             onChange={(e) => setDepartmentId(e.target.value)}
-            className="rounded-2xl border border-[var(--line)] bg-white/80 px-4 py-3 text-sm outline-none focus:border-[var(--accent)]"
+            className="rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 text-sm outline-none focus:border-[var(--accent)]"
           >
             <option value="">All departments</option>
             {departments.map((d) => (
@@ -84,7 +89,7 @@ export default function DoctorsPage() {
           <select
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
-            className="rounded-2xl border border-[var(--line)] bg-white/80 px-4 py-3 text-sm outline-none focus:border-[var(--accent)]"
+            className="rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 text-sm outline-none focus:border-[var(--accent)]"
           >
             <option value="">Any language</option>
             {["Tamil", "Hindi", "English", "Malayalam", "Telugu", "Kannada", "Marathi", "Urdu"].map(
@@ -112,28 +117,31 @@ export default function DoctorsPage() {
 
       {error && <p className="text-sm text-[var(--danger)]">{error}</p>}
 
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {doctors.map((d) => (
-          <article
-            key={d.id}
-            className="glass panel p-5 transition hover:-translate-y-0.5 hover:shadow-lg"
-          >
+          <article key={d.id} className="surface surface-hover p-5">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
+                <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--accent)]">
                   {deptName(d) ?? d.department_id}
                 </p>
-                <h3 className="mt-1 text-lg font-semibold tracking-tight">{d.name}</h3>
+                <h3 className="mt-1 text-lg font-bold tracking-tight">{d.name}</h3>
                 <p className="mt-1 text-sm text-[var(--muted)]">{d.qualification}</p>
               </div>
-              <span className="rounded-full bg-white/80 px-2.5 py-1 text-xs text-[var(--muted)]">
+              <span className="rounded-full bg-[var(--bg)] px-2.5 py-1 text-xs font-semibold text-[var(--muted)]">
                 {d.id}
               </span>
             </div>
-            <div className="mt-4 flex flex-wrap gap-2 text-xs text-[var(--muted)]">
-              <span className="rounded-full bg-white/70 px-2.5 py-1">{d.experience_years} yrs</span>
-              <span className="rounded-full bg-white/70 px-2.5 py-1">₹{d.consultation_fee}</span>
-              <span className="rounded-full bg-white/70 px-2.5 py-1">Room {d.room}</span>
+            <div className="mt-4 flex flex-wrap gap-2 text-xs">
+              <span className="rounded-full bg-[var(--accent-soft)] px-2.5 py-1 font-medium text-[var(--accent)]">
+                {d.experience_years} yrs
+              </span>
+              <span className="rounded-full bg-[var(--teal-soft)] px-2.5 py-1 font-medium text-[var(--teal)]">
+                ₹{d.consultation_fee}
+              </span>
+              <span className="rounded-full bg-[var(--sky-soft)] px-2.5 py-1 font-medium text-[var(--sky)]">
+                Room {d.room}
+              </span>
             </div>
             <p className="mt-3 text-sm text-[var(--muted)]">{d.languages?.join(" · ")}</p>
           </article>

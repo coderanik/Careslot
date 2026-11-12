@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 type Appointment = {
   id: number;
@@ -31,32 +32,32 @@ export default function AppointmentsPage() {
 
   return (
     <div className="space-y-5">
-      <div className="glass panel flex flex-col gap-4 p-5 md:flex-row md:items-end md:justify-between">
-        <div>
-          <h2
-            className="text-2xl font-semibold tracking-tight"
-            style={{ fontFamily: "var(--font-display)" }}
+      <div className="surface flex flex-col gap-4 p-5 md:flex-row md:items-end md:justify-between">
+        <p className="text-sm text-[var(--muted)]">
+          Everything booked for your patient account. Reschedule or cancel from the booking chat.
+        </p>
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex gap-1 rounded-xl border border-[var(--line)] bg-[var(--bg)] p-1">
+            {["booked", "cancelled", "all"].map((s) => (
+              <button
+                key={s}
+                onClick={() => setStatus(s)}
+                className={`rounded-lg px-3 py-2 text-sm capitalize transition ${
+                  status === s
+                    ? "bg-[var(--accent)] font-semibold text-white"
+                    : "text-[var(--muted)] hover:text-[var(--ink)]"
+                }`}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+          <Link
+            href="/booking"
+            className="rounded-xl bg-[var(--accent)] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[var(--accent-strong)]"
           >
-            My Appointments
-          </h2>
-          <p className="mt-1 text-sm text-[var(--muted)]">
-            Everything booked for Arjun Mehta. Reschedule or cancel from the booking chat.
-          </p>
-        </div>
-        <div className="flex gap-1 rounded-2xl border border-[var(--line)] bg-white/60 p-1">
-          {["booked", "cancelled", "all"].map((s) => (
-            <button
-              key={s}
-              onClick={() => setStatus(s)}
-              className={`rounded-xl px-3 py-2 text-sm capitalize transition ${
-                status === s
-                  ? "bg-[var(--ink)] text-white"
-                  : "text-[var(--muted)] hover:text-[var(--ink)]"
-              }`}
-            >
-              {s}
-            </button>
-          ))}
+            Change via AI
+          </Link>
         </div>
       </div>
 
@@ -64,15 +65,18 @@ export default function AppointmentsPage() {
 
       <div className="space-y-3">
         {items.length === 0 && !error && (
-          <div className="glass panel p-8 text-sm text-[var(--muted)]">No appointments in this view.</div>
+          <div className="surface p-8 text-sm text-[var(--muted)]">No appointments in this view.</div>
         )}
         {items.map((a) => (
-          <article key={a.id} className="glass panel flex flex-col gap-3 p-5 md:flex-row md:items-center md:justify-between">
+          <article
+            key={a.id}
+            className="surface flex flex-col gap-3 p-5 md:flex-row md:items-center md:justify-between"
+          >
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
+              <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--muted)]">
                 Appointment #{a.id}
               </p>
-              <h3 className="mt-1 text-lg font-semibold tracking-tight">{a.doctor_name}</h3>
+              <h3 className="mt-1 text-lg font-bold tracking-tight">{a.doctor_name}</h3>
               <p className="mt-1 text-sm text-[var(--muted)]">
                 {a.date} · {a.start_time}
                 {a.room ? ` · Room ${a.room}` : ""}
@@ -80,12 +84,12 @@ export default function AppointmentsPage() {
               {a.reason && <p className="mt-2 text-sm">{a.reason}</p>}
             </div>
             <span
-              className={`w-fit rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${
+              className={`w-fit rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide ${
                 a.status === "booked"
-                  ? "bg-[var(--accent-soft)] text-[var(--accent)]"
+                  ? "bg-[var(--success-soft)] text-[var(--success)]"
                   : a.status === "cancelled"
-                    ? "bg-red-50 text-[var(--danger)]"
-                    : "bg-white text-[var(--muted)]"
+                    ? "bg-[var(--danger-soft)] text-[var(--danger)]"
+                    : "bg-[var(--accent-soft)] text-[var(--accent)]"
               }`}
             >
               {a.status}

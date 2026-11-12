@@ -1,22 +1,36 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #f3f5f8;
-  --bg-elevated: rgba(255, 255, 255, 0.72);
-  --ink: #0b0c0f;
-  --muted: #5c6570;
-  --line: rgba(15, 23, 42, 0.08);
-  --accent: #0071e3;
-  --accent-soft: rgba(0, 113, 227, 0.12);
-  --success: #1f8a5b;
-  --danger: #c0392b;
-  --shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
-  --radius: 22px;
+  --bg: #f4f5fb;
+  --bg-sidebar: #f0eefc;
+  --bg-elevated: #ffffff;
+  --ink: #1e1b4b;
+  --muted: #6b7280;
+  --line: rgba(99, 102, 241, 0.12);
+  --accent: #6366f1;
+  --accent-strong: #4f46e5;
+  --accent-soft: rgba(99, 102, 241, 0.12);
+  --accent-glow: rgba(99, 102, 241, 0.18);
+  --success: #059669;
+  --success-soft: rgba(5, 150, 105, 0.12);
+  --warning: #d97706;
+  --warning-soft: rgba(217, 119, 6, 0.12);
+  --danger: #dc2626;
+  --danger-soft: rgba(220, 38, 38, 0.1);
+  --teal: #0d9488;
+  --teal-soft: rgba(13, 148, 136, 0.12);
+  --sky: #0284c7;
+  --sky-soft: rgba(2, 132, 199, 0.12);
+  --shadow: 0 10px 30px rgba(79, 70, 229, 0.08);
+  --shadow-sm: 0 4px 14px rgba(15, 23, 42, 0.05);
+  --radius: 16px;
+  --radius-lg: 20px;
+  --sidebar-w: 260px;
 }
 
 @theme inline {
-  --font-sans: var(--font-figtree), "Avenir Next", "Segoe UI", sans-serif;
-  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-jakarta), "Avenir Next", "Segoe UI", sans-serif;
+  --font-display: var(--font-jakarta), "Avenir Next", "Segoe UI", sans-serif;
   --color-ink: var(--ink);
   --color-muted: var(--muted);
   --color-accent: var(--accent);
@@ -35,30 +49,14 @@ body {
   min-height: 100vh;
   color: var(--ink);
   font-family: var(--font-sans);
-  background:
-    radial-gradient(1200px 600px at 10% -10%, rgba(0, 113, 227, 0.16), transparent 55%),
-    radial-gradient(900px 500px at 90% 0%, rgba(120, 170, 210, 0.18), transparent 50%),
-    linear-gradient(180deg, #eef3f8 0%, #f7f8fa 42%, #f2f4f7 100%);
-  background-attachment: fixed;
+  background: var(--bg);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.35) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.35) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(circle at center, black 30%, transparent 85%);
-  opacity: 0.35;
-}
-
 a {
   text-decoration: none;
+  color: inherit;
 }
 
 button,
@@ -68,30 +66,35 @@ textarea {
   font: inherit;
 }
 
-.glass {
+.surface {
   background: var(--bg-elevated);
   border: 1px solid var(--line);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(22px) saturate(140%);
-  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-lg);
 }
 
-.panel {
-  border-radius: var(--radius);
+.surface-hover {
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.surface-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+  border-color: rgba(99, 102, 241, 0.22);
 }
 
 .fade-up {
-  animation: fade-up 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: fade-up 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .fade-up-delay {
-  animation: fade-up 700ms cubic-bezier(0.22, 1, 0.36, 1) 80ms both;
+  animation: fade-up 560ms cubic-bezier(0.22, 1, 0.36, 1) 70ms both;
 }
 
 @keyframes fade-up {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -125,11 +128,17 @@ textarea {
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(15, 23, 42, 0.18);
+  background: rgba(99, 102, 241, 0.22);
   border-radius: 999px;
   border: 2px solid transparent;
   background-clip: padding-box;
+}
+
+@media (max-width: 1023px) {
+  :root {
+    --sidebar-w: 0px;
+  }
 }
