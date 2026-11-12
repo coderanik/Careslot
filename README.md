@@ -18,12 +18,14 @@ Patients of a multi-speciality clinic call the front desk just to book, move or 
 
 ## Live demo
 
-- **Vercel link:** _(filled after deploy)_
-- **Passcode:** see your team `.env.local` / Vercel `APP_PASSCODE`
+- **Vercel link:** https://careslot-agent.vercel.app
+- **Passcode:** set in Vercel as `APP_PASSCODE` (same value as local `.env.local`)
 - **Demo prompts:**
   - `I have a skin rash, book me with a doctor on Friday morning.`
   - `Move my appointment to the next free slot.`
   - `Which Tamil-speaking doctors are free tomorrow?`
+
+> Add `GEMINI_API_KEY` in `.env.local` and Vercel project env, then redeploy / restart to enable the agent chat.
 
 ## Agent tools
 
