@@ -1,0 +1,136 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #f3f5f8;
+  --bg-elevated: rgba(255, 255, 255, 0.72);
+  --ink: #0b0c0f;
+  --muted: #5c6570;
+  --line: rgba(15, 23, 42, 0.08);
+  --accent: #0071e3;
+  --accent-soft: rgba(0, 113, 227, 0.12);
+  --success: #1f8a5b;
+  --danger: #c0392b;
+  --shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+  --radius: 22px;
+}
+
+@theme inline {
+  --font-sans: var(--font-figtree), "Avenir Next", "Segoe UI", sans-serif;
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(0, 113, 227, 0.16), transparent 55%),
+    radial-gradient(900px 500px at 90% 0%, rgba(120, 170, 210, 0.18), transparent 50%),
+    linear-gradient(180deg, #eef3f8 0%, #f7f8fa 42%, #f2f4f7 100%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.35) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(circle at center, black 30%, transparent 85%);
+  opacity: 0.35;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.glass {
+  background: var(--bg-elevated);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+}
+
+.panel {
+  border-radius: var(--radius);
+}
+
+.fade-up {
+  animation: fade-up 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.fade-up-delay {
+  animation: fade-up 700ms cubic-bezier(0.22, 1, 0.36, 1) 80ms both;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--muted);
+  animation: pulse-soft 1.2s ease-in-out infinite;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.typing-dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.18);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
