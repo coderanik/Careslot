@@ -70,11 +70,13 @@ export default function DashboardPage() {
           { label: "Next visit", value: next?.start_time ?? "—", hint: next?.date ?? "None booked" },
           { label: "Agent tools", value: "6", hint: "3 write to Supabase" },
         ].map((card) => (
-          <div key={card.label} className="surface p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
+          <div key={card.label} className="surface p-5">
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--muted)]">
               {card.label}
             </p>
-            <p className="mt-2 text-3xl font-bold tracking-tight text-[var(--ink)]">{card.value}</p>
+            <p className="mt-2 text-3xl font-bold tracking-tight text-[var(--ink)] md:text-4xl">
+              {card.value}
+            </p>
             <p className="mt-1 text-xs text-[var(--muted)]">{card.hint}</p>
           </div>
         ))}
@@ -91,8 +93,8 @@ export default function DashboardPage() {
         </div>
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {quickActions.map((a) => (
-            <Link key={a.href} href={a.href} className="surface surface-hover p-4">
-              <div className={`mb-3 inline-flex rounded-xl px-2.5 py-1 text-[11px] font-semibold ${a.tone}`}>
+            <Link key={a.href} href={a.href} className="surface surface-hover p-5">
+              <div className={`mb-3 inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold ${a.tone}`}>
                 Open
               </div>
               <h3 className="text-base font-semibold tracking-tight">{a.title}</h3>
@@ -112,14 +114,14 @@ export default function DashboardPage() {
           </div>
           <div className="mt-4 space-y-3">
             {items.length === 0 && (
-              <p className="rounded-xl bg-[var(--bg)] px-4 py-6 text-sm text-[var(--muted)]">
+              <p className="rounded-2xl bg-[var(--bg)] px-4 py-6 text-sm text-[var(--muted)]">
                 No booked visits yet. Open Booking and ask the agent to schedule one.
               </p>
             )}
             {items.slice(0, 4).map((a) => (
               <article
                 key={a.id}
-                className="flex items-start justify-between gap-3 rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3"
+                className="flex items-start justify-between gap-3 rounded-2xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3"
               >
                 <div>
                   <p className="font-semibold tracking-tight">{a.doctor_name ?? "Doctor"}</p>
@@ -138,11 +140,12 @@ export default function DashboardPage() {
         </div>
 
         <div className="surface overflow-hidden lg:col-span-2">
-          <div className="bg-gradient-to-br from-indigo-500 to-violet-600 px-5 py-5 text-white">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/70">Demo tip</p>
+          <div className="bg-gradient-to-br from-[#ff7a3d] via-[#ff5a1f] to-[#e84812] px-5 py-5 text-white">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/75">Demo tip</p>
             <h3 className="mt-2 text-xl font-bold tracking-tight">Show the agent loop</h3>
-            <p className="mt-2 text-sm leading-relaxed text-white/85">
-              Try a booking prompt, then the medical-advice refusal. Tool names appear under each reply.
+            <p className="mt-2 text-sm leading-relaxed text-white/90">
+              Try a booking prompt, then the medical-advice refusal. Tool names appear under each
+              reply.
             </p>
           </div>
           <div className="space-y-2 p-4">
@@ -154,7 +157,7 @@ export default function DashboardPage() {
               <Link
                 key={prompt}
                 href="/booking"
-                className="block rounded-xl border border-[var(--line)] bg-[var(--bg)] px-3 py-2.5 text-sm text-[var(--ink)] transition hover:border-[var(--accent)] hover:bg-white"
+                className="block rounded-2xl border border-[var(--line)] bg-[var(--bg)] px-3 py-2.5 text-sm text-[var(--ink)] transition hover:border-[var(--accent)] hover:bg-white"
               >
                 {prompt}
               </Link>

@@ -108,11 +108,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--bg)] lg:flex">
+    <div className="min-h-screen lg:flex">
       {mobileOpen && (
         <button
           aria-label="Close menu"
-          className="fixed inset-0 z-40 bg-indigo-950/30 backdrop-blur-[2px] lg:hidden"
+          className="fixed inset-0 z-40 bg-black/25 backdrop-blur-[2px] lg:hidden"
           onClick={() => setMobileOpen(false)}
         />
       )}
@@ -123,12 +123,14 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         }`}
       >
         <div className="flex items-center gap-3 px-5 py-5">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--accent)] text-white shadow-[0_8px_20px_rgba(99,102,241,0.35)]">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--dark)] text-white shadow-[0_8px_20px_rgba(17,17,17,0.2)]">
             <PlusIcon />
           </div>
           <div>
-            <p className="text-base font-bold tracking-tight text-[var(--ink)]">CareSlot</p>
-            <p className="text-[11px] font-medium text-[var(--muted)]">Clinical booking</p>
+            <p className="text-[15px] font-extrabold tracking-[0.04em] text-[var(--ink)]">
+              CARESLOT<span className="text-[var(--accent)]">.</span>
+            </p>
+            <p className="text-[11px] font-medium text-[var(--muted)]">Clinic console</p>
           </div>
         </div>
 
@@ -139,10 +141,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
+                className={`flex items-center gap-3 rounded-full px-3 py-2.5 text-sm font-medium transition ${
                   active
-                    ? "bg-[var(--accent)] text-white shadow-[0_8px_18px_rgba(99,102,241,0.28)]"
-                    : "text-[var(--muted)] hover:bg-white/70 hover:text-[var(--ink)]"
+                    ? "bg-[var(--dark)] text-white shadow-[0_8px_18px_rgba(17,17,17,0.18)]"
+                    : "text-[var(--muted)] hover:bg-white hover:text-[var(--ink)]"
                 }`}
               >
                 <NavIcon name={item.icon} active={active} />
@@ -152,8 +154,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           })}
         </nav>
 
-        <div className="m-3 rounded-2xl border border-[var(--line)] bg-white/80 p-4 shadow-[var(--shadow-sm)]">
-          <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent)]">
+        <div className="m-3 rounded-[24px] border border-[var(--line)] bg-white p-4 shadow-[var(--shadow-sm)]">
+          <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-full bg-[var(--accent-soft)] text-[var(--accent)]">
             <PlusIcon />
           </div>
           <p className="text-sm font-semibold text-[var(--ink)]">Need help?</p>
@@ -162,7 +164,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           </p>
           <Link
             href="/booking"
-            className="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-[var(--accent)] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[var(--accent-strong)]"
+            className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-[var(--dark)] px-3 py-2 text-xs font-semibold text-white transition hover:bg-black"
           >
             Open booking chat
           </Link>
@@ -205,8 +207,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               <span className="absolute right-2.5 top-2.5 h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
             </button>
 
-            <div className="flex items-center gap-2.5 rounded-xl border border-[var(--line)] bg-white py-1.5 pl-1.5 pr-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--accent)] text-xs font-bold text-white">
+            <div className="flex items-center gap-2.5 rounded-full border border-[var(--line)] bg-white py-1.5 pl-1.5 pr-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--dark)] text-xs font-bold text-white">
                 {initials}
               </div>
               <div className="hidden min-w-0 sm:block">

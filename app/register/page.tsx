@@ -7,6 +7,9 @@ import SiteFooter from "@/components/SiteFooter";
 type Role = "patient" | "doctor";
 type Department = { id: string; name: string };
 
+const field =
+  "mt-1.5 w-full rounded-2xl border border-black/8 bg-[#faf8f5] px-4 py-3 outline-none transition focus:border-[#ff5a1f] focus:ring-4 focus:ring-[rgba(255,90,31,0.12)]";
+
 export default function RegisterPage() {
   const [role, setRole] = useState<Role>("patient");
   const [password, setPassword] = useState("");
@@ -78,20 +81,18 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--bg)]">
-      <header className="border-b border-[var(--line)] bg-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5 md:px-6">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--accent)] text-white">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
-                <path d="M12 5v14M5 12h14" strokeLinecap="round" />
-              </svg>
-            </div>
-            <span className="font-bold tracking-tight">CareSlot</span>
+    <div className="landing min-h-screen">
+      <header className="landing-nav scrolled">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 md:px-6">
+          <Link href="/" className="text-[15px] font-extrabold tracking-[0.04em] text-[#111]">
+            CARESLOT<span className="text-[#ff5a1f]">.</span>
           </Link>
           <div className="flex items-center gap-2 text-sm">
-            <span className="hidden text-[var(--muted)] sm:inline">Already have an id?</span>
-            <Link href="/login" className="font-semibold text-[var(--accent)] hover:underline">
+            <span className="hidden text-[#6b6b6b] sm:inline">Already have an id?</span>
+            <Link
+              href="/login"
+              className="rounded-full bg-[#171513] px-4 py-2 font-semibold text-white hover:bg-black"
+            >
               Sign in
             </Link>
           </div>
@@ -100,29 +101,31 @@ export default function RegisterPage() {
 
       <main className="mx-auto grid max-w-6xl gap-8 px-4 py-10 md:grid-cols-[1fr_1.1fr] md:px-6 md:py-14">
         <div className="fade-up">
-          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[var(--accent)]">
+          <span className="inline-flex rounded-full bg-[#ffe8de] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-[#ff5a1f]">
             Create account
-          </p>
-          <h1 className="mt-2 text-3xl font-bold tracking-tight md:text-4xl">Sign up for CareSlot</h1>
-          <p className="mt-3 max-w-md text-sm leading-relaxed text-[var(--muted)]">
+          </span>
+          <h1 className="mt-4 text-3xl font-bold tracking-[-0.03em] text-[#111] md:text-5xl md:leading-[1.05]">
+            Sign up for CareSlot
+          </h1>
+          <p className="mt-3 max-w-md text-sm leading-relaxed text-[#6b6b6b] md:text-base">
             Register a new <strong>patient</strong> or <strong>doctor</strong>. Choose a password,
             we mint your id in Supabase, and sign you in with a JWT.
           </p>
-          <ul className="mt-6 space-y-3 text-sm text-[var(--muted)]">
+          <ul className="mt-6 space-y-3 text-sm text-[#6b6b6b]">
             <li className="flex gap-2">
-              <span className="text-[var(--accent)]">✓</span> Patients get a P-series id for booking
+              <span className="text-[#ff5a1f]">✓</span> Patients get a P-series id for booking
             </li>
             <li className="flex gap-2">
-              <span className="text-[var(--accent)]">✓</span> Doctors get a DR-series id + free slots
+              <span className="text-[#ff5a1f]">✓</span> Doctors get a DR-series id + free slots
             </li>
             <li className="flex gap-2">
-              <span className="text-[var(--accent)]">✓</span> Password + confirm password on every signup
+              <span className="text-[#ff5a1f]">✓</span> Password + confirm password on every signup
             </li>
           </ul>
         </div>
 
-        <form onSubmit={handleSubmit} className="surface fade-up-delay p-6 md:p-7">
-          <div className="grid grid-cols-2 gap-2 rounded-xl border border-[var(--line)] bg-[var(--bg)] p-1">
+        <form onSubmit={handleSubmit} className="landing-card fade-up-delay p-6 md:p-7">
+          <div className="grid grid-cols-2 gap-2 rounded-full border border-black/8 bg-[#f6f4f1] p-1">
             {(
               [
                 { id: "patient", label: "Patient", hint: "Book visits" },
@@ -133,10 +136,10 @@ export default function RegisterPage() {
                 key={opt.id}
                 type="button"
                 onClick={() => setRole(opt.id)}
-                className={`rounded-lg px-3 py-3 text-left transition ${
+                className={`rounded-full px-3 py-3 text-left transition ${
                   role === opt.id
-                    ? "bg-[var(--accent)] text-white shadow-[0_8px_18px_rgba(99,102,241,0.25)]"
-                    : "text-[var(--muted)] hover:bg-white"
+                    ? "bg-[#171513] text-white shadow-[0_8px_18px_rgba(17,17,17,0.2)]"
+                    : "text-[#6b6b6b] hover:bg-white"
                 }`}
               >
                 <div className="text-sm font-semibold">{opt.label}</div>
@@ -146,12 +149,12 @@ export default function RegisterPage() {
           </div>
 
           <label className="mt-4 block text-sm">
-            <span className="font-medium text-[var(--muted)]">Full name</span>
+            <span className="font-medium text-[#6b6b6b]">Full name</span>
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="mt-1.5 w-full rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 outline-none focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-soft)]"
+              className={field}
               placeholder={role === "doctor" ? "Kavitha Subramanian" : "Your name"}
             />
           </label>
@@ -159,17 +162,17 @@ export default function RegisterPage() {
           {role === "patient" ? (
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               <label className="block text-sm sm:col-span-2">
-                <span className="font-medium text-[var(--muted)]">Phone</span>
+                <span className="font-medium text-[#6b6b6b]">Phone</span>
                 <input
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   required
-                  className="mt-1.5 w-full rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 outline-none focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-soft)]"
+                  className={field}
                   placeholder="98400 12345"
                 />
               </label>
               <label className="block text-sm">
-                <span className="font-medium text-[var(--muted)]">Age</span>
+                <span className="font-medium text-[#6b6b6b]">Age</span>
                 <input
                   type="number"
                   min={1}
@@ -177,28 +180,28 @@ export default function RegisterPage() {
                   value={age}
                   onChange={(e) => setAge(e.target.value)}
                   required
-                  className="mt-1.5 w-full rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 outline-none focus:border-[var(--accent)]"
+                  className={field}
                 />
               </label>
               <label className="block text-sm">
-                <span className="font-medium text-[var(--muted)]">City</span>
+                <span className="font-medium text-[#6b6b6b]">City</span>
                 <input
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   required
-                  className="mt-1.5 w-full rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 outline-none focus:border-[var(--accent)]"
+                  className={field}
                 />
               </label>
             </div>
           ) : (
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               <label className="block text-sm sm:col-span-2">
-                <span className="font-medium text-[var(--muted)]">Department</span>
+                <span className="font-medium text-[#6b6b6b]">Department</span>
                 <select
                   value={departmentId}
                   onChange={(e) => setDepartmentId(e.target.value)}
                   required
-                  className="mt-1.5 w-full rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 outline-none focus:border-[var(--accent)]"
+                  className={field}
                 >
                   {departments.map((d) => (
                     <option key={d.id} value={d.id}>
@@ -208,52 +211,47 @@ export default function RegisterPage() {
                 </select>
               </label>
               <label className="block text-sm">
-                <span className="font-medium text-[var(--muted)]">Qualification</span>
+                <span className="font-medium text-[#6b6b6b]">Qualification</span>
                 <input
                   value={qualification}
                   onChange={(e) => setQualification(e.target.value)}
                   required
-                  className="mt-1.5 w-full rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 outline-none focus:border-[var(--accent)]"
+                  className={field}
                 />
               </label>
               <label className="block text-sm">
-                <span className="font-medium text-[var(--muted)]">Room</span>
-                <input
-                  value={room}
-                  onChange={(e) => setRoom(e.target.value)}
-                  required
-                  className="mt-1.5 w-full rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 outline-none focus:border-[var(--accent)]"
-                />
+                <span className="font-medium text-[#6b6b6b]">Room</span>
+                <input value={room} onChange={(e) => setRoom(e.target.value)} required className={field} />
               </label>
               <label className="block text-sm">
-                <span className="font-medium text-[var(--muted)]">Experience (yrs)</span>
+                <span className="font-medium text-[#6b6b6b]">Experience (yrs)</span>
                 <input
                   type="number"
                   min={0}
                   value={experience}
                   onChange={(e) => setExperience(e.target.value)}
                   required
-                  className="mt-1.5 w-full rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 outline-none focus:border-[var(--accent)]"
+                  className={field}
                 />
               </label>
               <label className="block text-sm">
-                <span className="font-medium text-[var(--muted)]">Fee (₹)</span>
+                <span className="font-medium text-[#6b6b6b]">Fee (₹)</span>
                 <input
                   type="number"
                   min={0}
                   value={fee}
                   onChange={(e) => setFee(e.target.value)}
                   required
-                  className="mt-1.5 w-full rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 outline-none focus:border-[var(--accent)]"
+                  className={field}
                 />
               </label>
               <label className="block text-sm sm:col-span-2">
-                <span className="font-medium text-[var(--muted)]">Languages</span>
+                <span className="font-medium text-[#6b6b6b]">Languages</span>
                 <input
                   value={languages}
                   onChange={(e) => setLanguages(e.target.value)}
                   required
-                  className="mt-1.5 w-full rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 outline-none focus:border-[var(--accent)]"
+                  className={field}
                   placeholder="English, Tamil, Hindi"
                 />
               </label>
@@ -262,44 +260,45 @@ export default function RegisterPage() {
 
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             <label className="block text-sm">
-              <span className="font-medium text-[var(--muted)]">Password</span>
+              <span className="font-medium text-[#6b6b6b]">Password</span>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
-                className="mt-1.5 w-full rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 outline-none focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-soft)]"
+                className={field}
                 placeholder="At least 6 characters"
               />
             </label>
             <label className="block text-sm">
-              <span className="font-medium text-[var(--muted)]">Confirm password</span>
+              <span className="font-medium text-[#6b6b6b]">Confirm password</span>
               <input
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 minLength={6}
-                className="mt-1.5 w-full rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 outline-none focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-soft)]"
+                className={field}
                 placeholder="Repeat password"
               />
             </label>
           </div>
 
-          {error && <p className="mt-3 text-sm text-[var(--danger)]">{error}</p>}
+          {error && <p className="mt-3 text-sm text-[#dc2626]">{error}</p>}
 
           <button
             type="submit"
             disabled={loading || !password || !confirmPassword || !name}
-            className="mt-5 w-full rounded-xl bg-[var(--accent)] px-4 py-3.5 text-sm font-semibold text-white transition hover:bg-[var(--accent-strong)] disabled:opacity-40"
+            className="landing-btn-dark mt-5 w-full justify-center disabled:opacity-40"
           >
             {loading ? "Creating account…" : `Create ${role} account`}
+            <span className="arrow">→</span>
           </button>
 
-          <p className="mt-4 text-center text-xs text-[var(--muted)]">
+          <p className="mt-4 text-center text-xs text-[#6b6b6b]">
             Prefer the demo?{" "}
-            <Link href="/login" className="font-semibold text-[var(--accent)]">
+            <Link href="/login" className="font-semibold text-[#ff5a1f]">
               Sign in as P001 / demo1234
             </Link>
           </p>

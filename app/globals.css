@@ -1,16 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #f4f5fb;
-  --bg-sidebar: #f0eefc;
+  /* Match landing: warm cream + orange + near-black */
+  --bg: #f6f4f1;
+  --bg-sidebar: #f1eeea;
   --bg-elevated: #ffffff;
-  --ink: #1e1b4b;
-  --muted: #6b7280;
-  --line: rgba(99, 102, 241, 0.12);
-  --accent: #6366f1;
-  --accent-strong: #4f46e5;
-  --accent-soft: rgba(99, 102, 241, 0.12);
-  --accent-glow: rgba(99, 102, 241, 0.18);
+  --ink: #111111;
+  --muted: #6b6b6b;
+  --line: rgba(17, 17, 17, 0.08);
+  --accent: #ff5a1f;
+  --accent-strong: #e84812;
+  --accent-soft: rgba(255, 90, 31, 0.12);
+  --accent-glow: rgba(255, 90, 31, 0.18);
   --success: #059669;
   --success-soft: rgba(5, 150, 105, 0.12);
   --warning: #d97706;
@@ -21,10 +22,11 @@
   --teal-soft: rgba(13, 148, 136, 0.12);
   --sky: #0284c7;
   --sky-soft: rgba(2, 132, 199, 0.12);
-  --shadow: 0 10px 30px rgba(79, 70, 229, 0.08);
-  --shadow-sm: 0 4px 14px rgba(15, 23, 42, 0.05);
+  --dark: #171513;
+  --shadow: 0 24px 60px rgba(17, 17, 17, 0.08);
+  --shadow-sm: 0 10px 30px rgba(17, 17, 17, 0.06);
   --radius: 16px;
-  --radius-lg: 20px;
+  --radius-lg: 28px;
   --sidebar-w: 260px;
 }
 
@@ -49,7 +51,10 @@ body {
   min-height: 100vh;
   color: var(--ink);
   font-family: var(--font-sans);
-  background: var(--bg);
+  background:
+    radial-gradient(900px 500px at 50% -10%, rgba(255, 176, 140, 0.28), transparent 60%),
+    linear-gradient(180deg, #faf8f5 0%, var(--bg) 40%, #f3f1ed 100%);
+  background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -80,7 +85,7 @@ textarea {
 .surface-hover:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow);
-  border-color: rgba(99, 102, 241, 0.22);
+  border-color: rgba(255, 90, 31, 0.22);
 }
 
 .fade-up {
@@ -131,7 +136,7 @@ textarea {
   width: 8px;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.22);
+  background: rgba(17, 17, 17, 0.18);
   border-radius: 999px;
   border: 2px solid transparent;
   background-clip: padding-box;

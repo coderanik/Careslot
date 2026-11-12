@@ -41,21 +41,16 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--bg)]">
-      <header className="border-b border-[var(--line)] bg-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5 md:px-6">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--accent)] text-white">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
-                <path d="M12 5v14M5 12h14" strokeLinecap="round" />
-              </svg>
-            </div>
-            <span className="font-bold tracking-tight">CareSlot</span>
+    <div className="landing min-h-screen">
+      <header className="landing-nav scrolled">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 md:px-6">
+          <Link href="/" className="text-[15px] font-extrabold tracking-[0.04em] text-[#111]">
+            CARESLOT<span className="text-[#ff5a1f]">.</span>
           </Link>
           <div className="flex items-center gap-2">
             <Link
               href="/register"
-              className="rounded-xl bg-[var(--accent)] px-3.5 py-2 text-sm font-semibold text-white hover:bg-[var(--accent-strong)]"
+              className="rounded-full bg-[#171513] px-4 py-2 text-sm font-semibold text-white hover:bg-black"
             >
               Sign up
             </Link>
@@ -64,23 +59,23 @@ export default function LoginPage() {
       </header>
 
       <main className="relative flex justify-center px-4 py-12 md:py-16">
-        <div className="pointer-events-none absolute -left-20 top-16 h-72 w-72 rounded-full bg-indigo-300/30 blur-3xl" />
-        <div className="pointer-events-none absolute bottom-10 right-0 h-80 w-80 rounded-full bg-violet-300/25 blur-3xl" />
+        <div className="pointer-events-none absolute -left-20 top-10 h-72 w-72 rounded-full bg-orange-300/30 blur-3xl" />
+        <div className="pointer-events-none absolute bottom-0 right-0 h-80 w-80 rounded-full bg-rose-200/35 blur-3xl" />
 
-        <form onSubmit={handleSubmit} className="surface relative w-full max-w-md overflow-hidden p-7 fade-up">
-          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[var(--muted)]">
+        <form onSubmit={handleSubmit} className="landing-card relative w-full max-w-md overflow-hidden p-7 fade-up">
+          <span className="inline-flex rounded-full bg-[#ffe8de] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-[#ff5a1f]">
             Welcome back
-          </p>
-          <h1 className="mt-2 text-3xl font-bold tracking-tight">Sign in</h1>
-          <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">
+          </span>
+          <h1 className="mt-4 text-3xl font-bold tracking-[-0.03em] text-[#111]">Sign in</h1>
+          <p className="mt-2 text-sm leading-relaxed text-[#6b6b6b]">
             Use your patient or doctor id and password. New here?{" "}
-            <Link href="/register" className="font-semibold text-[var(--accent)]">
+            <Link href="/register" className="font-semibold text-[#ff5a1f]">
               Create an account
             </Link>
             .
           </p>
 
-          <div className="mt-6 grid grid-cols-2 gap-2 rounded-xl border border-[var(--line)] bg-[var(--bg)] p-1">
+          <div className="mt-6 grid grid-cols-2 gap-2 rounded-full border border-black/8 bg-[#f6f4f1] p-1">
             {(
               [
                 { id: "patient", label: "Patient", hint: "e.g. P001" },
@@ -91,10 +86,10 @@ export default function LoginPage() {
                 key={opt.id}
                 type="button"
                 onClick={() => switchRole(opt.id)}
-                className={`rounded-lg px-3 py-3 text-left transition ${
+                className={`rounded-full px-3 py-3 text-left transition ${
                   role === opt.id
-                    ? "bg-[var(--accent)] text-white shadow-[0_8px_18px_rgba(99,102,241,0.25)]"
-                    : "text-[var(--muted)] hover:bg-white"
+                    ? "bg-[#171513] text-white shadow-[0_8px_18px_rgba(17,17,17,0.2)]"
+                    : "text-[#6b6b6b] hover:bg-white"
                 }`}
               >
                 <div className="text-sm font-semibold">{opt.label}</div>
@@ -104,25 +99,25 @@ export default function LoginPage() {
           </div>
 
           <label className="mt-4 block text-sm">
-            <span className="font-medium text-[var(--muted)]">
+            <span className="font-medium text-[#6b6b6b]">
               {role === "patient" ? "Patient id" : "Doctor id"}
             </span>
             <input
               value={userId}
               onChange={(e) => setUserId(e.target.value.toUpperCase())}
-              className="mt-1.5 w-full rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 outline-none focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-soft)]"
+              className="mt-1.5 w-full rounded-full border border-black/8 bg-[#faf8f5] px-4 py-3 outline-none transition focus:border-[#ff5a1f] focus:ring-4 focus:ring-[rgba(255,90,31,0.12)]"
               placeholder={role === "patient" ? "P001" : "DR01"}
               required
             />
           </label>
 
           <label className="mt-4 block text-sm">
-            <span className="font-medium text-[var(--muted)]">Password</span>
+            <span className="font-medium text-[#6b6b6b]">Password</span>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1.5 w-full rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 outline-none focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-soft)]"
+              className="mt-1.5 w-full rounded-full border border-black/8 bg-[#faf8f5] px-4 py-3 outline-none transition focus:border-[#ff5a1f] focus:ring-4 focus:ring-[rgba(255,90,31,0.12)]"
               placeholder="Enter password"
               autoFocus
               required
@@ -130,17 +125,18 @@ export default function LoginPage() {
             />
           </label>
 
-          {error && <p className="mt-3 text-sm text-[var(--danger)]">{error}</p>}
+          {error && <p className="mt-3 text-sm text-[#dc2626]">{error}</p>}
 
           <button
             type="submit"
             disabled={loading || !password || !userId}
-            className="mt-5 w-full rounded-xl bg-[var(--accent)] px-4 py-3.5 text-sm font-semibold text-white transition hover:bg-[var(--accent-strong)] disabled:opacity-40"
+            className="landing-btn-dark mt-5 w-full justify-center disabled:opacity-40"
           >
             {loading ? "Signing in…" : "Continue"}
+            <span className="arrow">→</span>
           </button>
 
-          <p className="mt-4 text-center text-xs leading-relaxed text-[var(--muted)]">
+          <p className="mt-4 text-center text-xs leading-relaxed text-[#6b6b6b]">
             Demo: <strong>P001</strong> / <strong>DR01</strong> · password <strong>demo1234</strong>
           </p>
         </form>
