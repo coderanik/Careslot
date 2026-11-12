@@ -60,9 +60,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`rounded-[16px] px-3.5 py-2 text-sm transition ${
+                  className={`rounded-[16px] px-3.5 py-2 text-sm font-medium transition ${
                     active
-                      ? "bg-[var(--ink)] text-white shadow-sm"
+                      ? "bg-[var(--ink)] text-[#ffffff] shadow-sm"
                       : "text-[var(--muted)] hover:bg-white/70 hover:text-[var(--ink)]"
                   }`}
                 >
