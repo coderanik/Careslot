@@ -179,7 +179,7 @@ const getAvailableSlots = defineTool({
 
     const { data: doctorRows, error: doctorError } = await db
       .from("doctors")
-      .select("id, name, department_id, languages")
+      .select("id, name, department_id, languages, departments(name)")
       .in("id", ids);
     if (doctorError) throw new Error(doctorError.message);
     if (!doctorRows?.length) throw new Error("No doctor found for the given ids");
@@ -209,6 +209,7 @@ const getAvailableSlots = defineTool({
     }
 
     const byDoctor = doctorRows.map((doctor) => {
+      const dept = Array.isArray(doctor.departments) ? doctor.departments[0] : doctor.departments;
       const doctorSlots = slots
         .filter((s) => s.doctor_id === doctor.id)
         .slice(0, 6)
@@ -222,6 +223,7 @@ const getAvailableSlots = defineTool({
           id: doctor.id,
           name: doctor.name,
           department_id: doctor.department_id,
+          department_name: dept?.name ?? null,
           languages: doctor.languages,
         },
         free_count: doctorSlots.length,
