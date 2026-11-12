@@ -173,7 +173,7 @@ export default function Landing() {
             </Link>
           </div>
           <div className="reveal mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-[#6b6b6b]">
-            {["Team passcode protected", "No credit card", "JWT roles & encrypted sessions"].map(
+            {["Password-protected accounts", "No credit card", "JWT roles & encrypted sessions"].map(
               (t) => (
                 <span key={t} className="inline-flex items-center gap-1.5">
                   <span className="text-emerald-600">✓</span> {t}

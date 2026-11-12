@@ -7,7 +7,7 @@
 -- Logged-in user for the demo: patient P001 (Arjun Mehta). Dummy data only, no real patients.
 -- =====================================================================
 
-drop table if exists appointments, patients, slots, doctors, departments cascade;
+drop table if exists accounts, appointments, patients, slots, doctors, departments cascade;
 
 create table departments (
   id             text primary key,
@@ -113,8 +113,29 @@ select 'P001', doctor_id, id, 'Follow-up for fever' from s;
 
 -- Row Level Security ON with no policies: only your server (secret key) can read/write.
 -- The public anon key cannot read these tables.
+-- Password auth for patients and doctors (demo password: demo1234)
+create table accounts (
+  user_id       text primary key,
+  role          text not null check (role in ('patient', 'doctor')),
+  password_hash text not null,
+  created_at    timestamptz not null default now()
+);
+
+insert into accounts (user_id, role, password_hash) values
+  (
+    'P001',
+    'patient',
+    'd9fa6c2c8a971fce38bef65f10f1644d:acc0750c5e47b74bb15e499153a58315768f113f9228fb3e6d601e50d96bf0323fa91bc6ded55c5aa11bb478d88919c1c99a90a018888f44a92ff84af968712a'
+  ),
+  (
+    'DR01',
+    'doctor',
+    'd9fa6c2c8a971fce38bef65f10f1644d:acc0750c5e47b74bb15e499153a58315768f113f9228fb3e6d601e50d96bf0323fa91bc6ded55c5aa11bb478d88919c1c99a90a018888f44a92ff84af968712a'
+  );
+
 alter table departments enable row level security;
 alter table doctors enable row level security;
 alter table slots enable row level security;
 alter table patients enable row level security;
 alter table appointments enable row level security;
+alter table accounts enable row level security;

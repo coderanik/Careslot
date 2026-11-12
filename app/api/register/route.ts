@@ -1,32 +1,48 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { SESSION_COOKIE, signSession } from "@/lib/auth";
+import { hashPassword, passwordSchema } from "@/lib/password";
 import { getSupabase } from "@/lib/supabase";
 
 export const runtime = "nodejs";
 
-const patientSchema = z.object({
-  role: z.literal("patient"),
-  passcode: z.string().min(1).max(100),
-  name: z.string().trim().min(2).max(80),
-  phone: z.string().trim().min(8).max(20),
-  age: z.coerce.number().int().min(1).max(120),
-  city: z.string().trim().min(2).max(60),
-});
+const baseAuth = {
+  password: z.string().min(passwordSchema.min).max(passwordSchema.max),
+  confirmPassword: z.string().min(passwordSchema.min).max(passwordSchema.max),
+};
 
-const doctorSchema = z.object({
-  role: z.literal("doctor"),
-  passcode: z.string().min(1).max(100),
-  name: z.string().trim().min(2).max(80),
-  department_id: z.string().trim().min(1).max(20),
-  qualification: z.string().trim().min(2).max(80),
-  experience_years: z.coerce.number().int().min(0).max(60),
-  consultation_fee: z.coerce.number().int().min(0).max(10000),
-  languages: z.string().trim().min(2).max(120),
-  room: z.string().trim().min(1).max(20),
-});
+const patientSchema = z
+  .object({
+    role: z.literal("patient"),
+    name: z.string().trim().min(2).max(80),
+    phone: z.string().trim().min(8).max(20),
+    age: z.coerce.number().int().min(1).max(120),
+    city: z.string().trim().min(2).max(60),
+    ...baseAuth,
+  })
+  .refine((d) => d.password === d.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
-const registerSchema = z.discriminatedUnion("role", [patientSchema, doctorSchema]);
+const doctorSchema = z
+  .object({
+    role: z.literal("doctor"),
+    name: z.string().trim().min(2).max(80),
+    department_id: z.string().trim().min(1).max(20),
+    qualification: z.string().trim().min(2).max(80),
+    experience_years: z.coerce.number().int().min(0).max(60),
+    consultation_fee: z.coerce.number().int().min(0).max(10000),
+    languages: z.string().trim().min(2).max(120),
+    room: z.string().trim().min(1).max(20),
+    ...baseAuth,
+  })
+  .refine((d) => d.password === d.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
+const registerSchema = z.union([patientSchema, doctorSchema]);
 
 function nextId(prefix: "P" | "DR", existing: string[]) {
   let max = 0;
@@ -62,7 +78,6 @@ async function seedDoctorSlots(doctorId: string) {
   for (let d = 0; d < 14; d++) {
     const day = new Date(today);
     day.setDate(today.getDate() + d);
-    // Skip Sundays (0)
     if (day.getDay() === 0) continue;
     const slotDate = dateInIndia(day);
     for (const start_time of times) {
@@ -74,27 +89,31 @@ async function seedDoctorSlots(doctorId: string) {
   if (error) throw new Error(error.message);
 }
 
+function accountsMissing(message: string) {
+  return /relation .*accounts.* does not exist|Could not find the table/i.test(message);
+}
+
 export async function POST(request: Request) {
-  const expected = process.env.APP_PASSCODE?.trim();
-  if (!expected) {
-    return NextResponse.json({ error: "APP_PASSCODE is not set on the server." }, { status: 500 });
-  }
   if (!process.env.APP_JWT_SECRET?.trim()) {
     return NextResponse.json({ error: "APP_JWT_SECRET is not set on the server." }, { status: 500 });
   }
 
   const parsed = registerSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
+    const mismatch = parsed.error.issues.some((i) => i.message === "Passwords do not match");
     return NextResponse.json(
-      { error: "Invalid registration details", details: parsed.error.issues },
+      {
+        error: mismatch
+          ? "Password and confirm password do not match."
+          : "Invalid registration details",
+        details: parsed.error.issues,
+      },
       { status: 400 }
     );
   }
-  if (parsed.data.passcode.trim() !== expected) {
-    return NextResponse.json({ error: "Wrong team passcode." }, { status: 401 });
-  }
 
   const db = getSupabase();
+  const passwordHash = hashPassword(parsed.data.password);
 
   try {
     if (parsed.data.role === "patient") {
@@ -117,6 +136,22 @@ export async function POST(request: Request) {
         .select("id, name")
         .single();
       if (error) throw new Error(error.message);
+
+      const { error: accountError } = await db.from("accounts").insert({
+        user_id: patient.id,
+        role: "patient",
+        password_hash: passwordHash,
+      });
+      if (accountError) {
+        await db.from("patients").delete().eq("id", patient.id);
+        if (accountsMissing(accountError.message)) {
+          return NextResponse.json(
+            { error: "Auth table missing. Run seed/accounts_auth.sql in Supabase SQL Editor." },
+            { status: 503 }
+          );
+        }
+        throw new Error(accountError.message);
+      }
 
       const user = { role: "patient" as const, userId: patient.id, name: patient.name };
       const token = await signSession(user);
@@ -170,6 +205,22 @@ export async function POST(request: Request) {
       .select("id, name")
       .single();
     if (error) throw new Error(error.message);
+
+    const { error: accountError } = await db.from("accounts").insert({
+      user_id: doctor.id,
+      role: "doctor",
+      password_hash: passwordHash,
+    });
+    if (accountError) {
+      await db.from("doctors").delete().eq("id", doctor.id);
+      if (accountsMissing(accountError.message)) {
+        return NextResponse.json(
+          { error: "Auth table missing. Run seed/accounts_auth.sql in Supabase SQL Editor." },
+          { status: 503 }
+        );
+      }
+      throw new Error(accountError.message);
+    }
 
     await seedDoctorSlots(doctor.id);
 

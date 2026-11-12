@@ -1,6 +1,6 @@
 /**
  * JWT role-based session auth.
- * Cookie stores a signed JWT (not the passcode). Roles: patient | doctor.
+ * Cookie stores a signed JWT after password login/register. Roles: patient | doctor.
  * Uses Web Crypto-compatible jose for Edge-safe verification in proxy.ts.
  */
 import { SignJWT, jwtVerify, type JWTPayload } from "jose";
@@ -19,10 +19,10 @@ export type SessionUser = {
 export type SessionClaims = JWTPayload & SessionUser;
 
 function getJwtSecret(): Uint8Array {
-  const secret =
-    process.env.APP_JWT_SECRET?.trim() ||
-    process.env.APP_PASSCODE?.trim() ||
-    "careslot-development-jwt-secret-key-32-chars-long";
+  const secret = process.env.APP_JWT_SECRET?.trim();
+  if (!secret) {
+    throw new Error("Missing APP_JWT_SECRET for signing sessions.");
+  }
   return new TextEncoder().encode(secret);
 }
 

@@ -7,7 +7,7 @@ import SiteFooter from "@/components/SiteFooter";
 type Role = "patient" | "doctor";
 
 export default function LoginPage() {
-  const [passcode, setPasscode] = useState("123456");
+  const [password, setPassword] = useState("");
   const [role, setRole] = useState<Role>("patient");
   const [userId, setUserId] = useState("P001");
   const [error, setError] = useState("");
@@ -26,7 +26,7 @@ export default function LoginPage() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        passcode,
+        password,
         role,
         userId,
       }),
@@ -73,7 +73,7 @@ export default function LoginPage() {
           </p>
           <h1 className="mt-2 text-3xl font-bold tracking-tight">Sign in</h1>
           <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">
-            Use your patient or doctor id plus the team passcode. New here?{" "}
+            Use your patient or doctor id and password. New here?{" "}
             <Link href="/register" className="font-semibold text-[var(--accent)]">
               Create an account
             </Link>
@@ -116,49 +116,32 @@ export default function LoginPage() {
             />
           </label>
 
-<<<<<<< HEAD
-        <label className="mt-4 block text-sm">
-          <div className="flex items-center justify-between">
-            <span className="text-[var(--muted)]">Team passcode</span>
-            <span className="text-xs text-[var(--muted)]">Demo: <code>123456</code></span>
-          </div>
-          <input
-            type="password"
-            value={passcode}
-            onChange={(e) => setPasscode(e.target.value)}
-            className="mt-1.5 w-full rounded-2xl border border-[var(--line)] bg-white/80 px-4 py-3 outline-none focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-soft)]"
-            placeholder="123456"
-            autoFocus
-          />
-        </label>
-=======
           <label className="mt-4 block text-sm">
-            <span className="font-medium text-[var(--muted)]">Team passcode</span>
+            <span className="font-medium text-[var(--muted)]">Password</span>
             <input
               type="password"
-              value={passcode}
-              onChange={(e) => setPasscode(e.target.value)}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="mt-1.5 w-full rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 outline-none focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-soft)]"
-              placeholder="Passcode"
+              placeholder="Enter password"
               autoFocus
               required
+              minLength={6}
             />
           </label>
->>>>>>> 1c981e47484ad694291124653d6ef526d7475e3c
 
           {error && <p className="mt-3 text-sm text-[var(--danger)]">{error}</p>}
 
           <button
             type="submit"
-            disabled={loading || !passcode || !userId}
+            disabled={loading || !password || !userId}
             className="mt-5 w-full rounded-xl bg-[var(--accent)] px-4 py-3.5 text-sm font-semibold text-white transition hover:bg-[var(--accent-strong)] disabled:opacity-40"
           >
             {loading ? "Signing in…" : "Continue"}
           </button>
 
           <p className="mt-4 text-center text-xs leading-relaxed text-[var(--muted)]">
-            Demo patient <strong>P001</strong> · demo doctor <strong>DR01</strong>. JWT claims include{" "}
-            <code>role</code> and <code>userId</code>.
+            Demo: <strong>P001</strong> / <strong>DR01</strong> · password <strong>demo1234</strong>
           </p>
         </form>
       </main>

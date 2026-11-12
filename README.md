@@ -14,16 +14,15 @@ Patients of a multi-speciality clinic call the front desk just to book, move or 
 - Shows free slots and books, reschedules or cancels appointments
 - Marks a slot booked exactly once; cancelling frees it again
 - Includes a stretch **doctor day view** for the signed-in doctor’s schedule
-- Protects the app with a team passcode, then issues a **JWT** with `role` + `userId`
+- Password auth for patients and doctors, then issues a **JWT** with `role` + `userId`
 - Clinic console UI: **Dashboard**, **Knowledge Center**, and **Reports** alongside Booking
 
 ## Live demo
 
 - **Vercel link:** https://careslot-agent.vercel.app
 - **Landing:** `/` with Sign in / Sign up
-- **Register:** `/register` creates a new **patient** or **doctor** in Supabase (then signs you in)
-- **Login:** `/login` with patient/doctor id + team passcode (demo: `P001` / `DR01`)
-- **Passcode:** set in Vercel as `APP_PASSCODE` (same value as local `.env.local`)
+- **Register:** `/register` creates a new **patient** or **doctor** (password + confirm password)
+- **Login:** `/login` with id + password (demo: `P001` / `DR01`, password `demo1234`)
 - **Demo prompts:**
   - `I have a skin rash, book me with a doctor on Friday morning.`
   - `Move my appointment to the next free slot.`
@@ -50,6 +49,7 @@ Patients of a multi-speciality clinic call the front desk just to book, move or 
 - `slots` — bookable times; `is_booked` enforces single booking
 - `patients` — demo patients including P001 Arjun Mehta
 - `appointments` — booked / cancelled / completed visits
+- `accounts` — password hashes for patient/doctor logins (`seed/accounts_auth.sql`)
 
 ## Tech stack
 
@@ -68,14 +68,14 @@ Next.js · React · TypeScript · Tailwind CSS · Supabase · Gemini API (functi
 ## Run it locally
 
 1. `npm install`
-2. Copy `.env.example` to `.env.local` and fill in the keys (`GEMINI_API_KEY`, Supabase URL + secret key, `APP_PASSCODE`, `APP_JWT_SECRET`)
-3. In Supabase SQL Editor, run `seed/ps3_clinic_appointments.sql`
+2. Copy `.env.example` to `.env.local` and fill in the keys (`GEMINI_API_KEY`, Supabase URL + secret key, `APP_JWT_SECRET`)
+3. In Supabase SQL Editor, run `seed/ps3_clinic_appointments.sql`, then `seed/accounts_auth.sql`
 4. `npm run dev`
-5. Open http://localhost:3000 — sign in as **Patient** (Arjun Mehta) or **Doctor** (e.g. DR01)
+5. Open http://localhost:3000 — sign in as **P001** / **DR01** with password **demo1234**, or register a new account
 
 ## Auth model
 
-1. Team passcode gates access (protects Gemini quota).
+1. Register stores a scrypt password hash in `accounts`; login verifies id + password.
 2. On success the server signs an HS256 JWT (`APP_JWT_SECRET`) with claims: `role` (`patient` | `doctor`), `userId`, `name`.
 3. The JWT is stored in an httpOnly cookie (`careslot_session`).
 4. `proxy.ts` verifies the JWT on every page/API. Write tools always use the patient id from the JWT, never from the model.

@@ -9,7 +9,8 @@ type Department = { id: string; name: string };
 
 export default function RegisterPage() {
   const [role, setRole] = useState<Role>("patient");
-  const [passcode, setPasscode] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [age, setAge] = useState("29");
@@ -37,15 +38,20 @@ export default function RegisterPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      setError("Password and confirm password do not match.");
+      return;
+    }
     setLoading(true);
     setError("");
 
     const body =
       role === "patient"
-        ? { role, passcode, name, phone, age: Number(age), city }
+        ? { role, password, confirmPassword, name, phone, age: Number(age), city }
         : {
             role,
-            passcode,
+            password,
+            confirmPassword,
             name,
             department_id: departmentId,
             qualification,
@@ -99,8 +105,8 @@ export default function RegisterPage() {
           </p>
           <h1 className="mt-2 text-3xl font-bold tracking-tight md:text-4xl">Sign up for CareSlot</h1>
           <p className="mt-3 max-w-md text-sm leading-relaxed text-[var(--muted)]">
-            Register a new <strong>patient</strong> or <strong>doctor</strong>. We create your id in
-            Supabase, sign a JWT, and drop you into the console.
+            Register a new <strong>patient</strong> or <strong>doctor</strong>. Choose a password,
+            we mint your id in Supabase, and sign you in with a JWT.
           </p>
           <ul className="mt-6 space-y-3 text-sm text-[var(--muted)]">
             <li className="flex gap-2">
@@ -110,7 +116,7 @@ export default function RegisterPage() {
               <span className="text-[var(--accent)]">✓</span> Doctors get a DR-series id + free slots
             </li>
             <li className="flex gap-2">
-              <span className="text-[var(--accent)]">✓</span> Team passcode protects Gemini quota
+              <span className="text-[var(--accent)]">✓</span> Password + confirm password on every signup
             </li>
           </ul>
         </div>
@@ -254,23 +260,38 @@ export default function RegisterPage() {
             </div>
           )}
 
-          <label className="mt-3 block text-sm">
-            <span className="font-medium text-[var(--muted)]">Team passcode</span>
-            <input
-              type="password"
-              value={passcode}
-              onChange={(e) => setPasscode(e.target.value)}
-              required
-              className="mt-1.5 w-full rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 outline-none focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-soft)]"
-              placeholder="Passcode"
-            />
-          </label>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+            <label className="block text-sm">
+              <span className="font-medium text-[var(--muted)]">Password</span>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+                className="mt-1.5 w-full rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 outline-none focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-soft)]"
+                placeholder="At least 6 characters"
+              />
+            </label>
+            <label className="block text-sm">
+              <span className="font-medium text-[var(--muted)]">Confirm password</span>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                minLength={6}
+                className="mt-1.5 w-full rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 outline-none focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-soft)]"
+                placeholder="Repeat password"
+              />
+            </label>
+          </div>
 
           {error && <p className="mt-3 text-sm text-[var(--danger)]">{error}</p>}
 
           <button
             type="submit"
-            disabled={loading || !passcode || !name}
+            disabled={loading || !password || !confirmPassword || !name}
             className="mt-5 w-full rounded-xl bg-[var(--accent)] px-4 py-3.5 text-sm font-semibold text-white transition hover:bg-[var(--accent-strong)] disabled:opacity-40"
           >
             {loading ? "Creating account…" : `Create ${role} account`}
@@ -279,7 +300,7 @@ export default function RegisterPage() {
           <p className="mt-4 text-center text-xs text-[var(--muted)]">
             Prefer the demo?{" "}
             <Link href="/login" className="font-semibold text-[var(--accent)]">
-              Sign in as P001
+              Sign in as P001 / demo1234
             </Link>
           </p>
         </form>

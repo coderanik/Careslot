@@ -76,7 +76,7 @@ const categories = [
   },
   {
     title: "Patient care desk",
-    desc: "Passcode login and JWT roles",
+    desc: "Password login and JWT roles",
     tone: "bg-[var(--accent-soft)] text-[var(--accent)]",
     href: "/reports",
   },
